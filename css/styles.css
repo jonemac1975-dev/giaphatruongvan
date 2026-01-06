@@ -1,0 +1,553 @@
+/* =====================================================
+   RESET & BASE
+===================================================== */
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+.hidden { display: none; }
+
+/* =====================================================
+   HEADER
+===================================================== */
+#site-header {
+  --header-bg: none;
+  position: relative;
+  min-height: 190px;
+  padding: 10px 20px 42px;
+  overflow: hidden;
+  background:
+    linear-gradient(
+      to right,
+      #b30000 0%,
+      #b30000 40%,
+      rgba(179,0,0,0.85) 48%,
+      rgba(179,0,0,0.3) 58%,
+      transparent 68%
+    ),
+    var(--header-bg);
+  background-repeat: no-repeat;
+  background-position: left top, right center;
+  background-size: 100% 100%, 65% auto;
+}
+
+.header-inner { display: flex; justify-content: flex-start; gap: 40px; }
+
+.header-left { display: flex; flex-direction: column; gap: 6px; }
+
+/* ===== LOGO KIỂU AVATAR ===== */
+.logo {
+  width: 56px;               /* bằng với avatar trưởng họ */
+  height: 56px;
+  border-radius: 50%;
+  background: #2e5cb8;
+  color: yellow;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;         /* ảnh vừa khung, không méo */
+  border-radius: 50%;
+  display: block;
+}
+
+.title-main { font-size: 22px; font-weight: bold; color: #fff; }
+.title-sub { font-size: 26px; font-family: "Brush Script MT", cursive; color: #ffeb3b; font-weight: bold; }
+
+.header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  max-width: 420px;
+  flex-shrink: 0;
+}
+
+/* Avatar */
+.avatar-label { margin-top: 4px; font-size: 12px; color: #fff; white-space: nowrap; }
+.avatars { display: flex; gap: 12px; }
+/* khung avatar */
+/* avatar */
+.chief-avatar,
+.branch {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chief-avatar img,
+.branch img {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #1e4db7;
+  background: #3a6fcf;
+  position: relative;
+  z-index: 2;
+}
+
+
+/* hào quang */
+.glow::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255,210,120,0.9) 45%,
+    rgba(255,180,80,0.5) 60%,
+    rgba(255,180,80,0.15) 50%,
+    transparent 85%
+  );
+
+  animation: haloPulse 3.5s ease-in-out infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* trưởng họ mạnh hơn */
+.chief-avatar.glow::before {
+  inset: -5px;
+  animation-duration: 3s;
+}
+
+/* nhịp thở */
+@keyframes haloPulse {
+  0%   { opacity: 0.6; transform: scale(0.95); }
+  50%  { opacity: 1;   transform: scale(1.05); }
+  100% { opacity: 0.6; transform: scale(0.95); }
+}
+
+/* KHÔNG CHO CẮT HÀO QUANG */
+.chief-avatar,
+.branch {
+  overflow: visible !important;
+}
+
+.glow {
+  position: relative;
+  z-index: 3;
+}
+
+
+/* Marquee */
+.header-marquee {
+  position: absolute; left: 0; bottom: 0;
+  width: 100%; height: 32px; line-height: 32px;
+  background: rgba(0,0,0,0.35);
+  overflow: hidden; white-space: nowrap; text-align: center;
+  z-index: 0; pointer-events: none;
+}
+.marquee-text {
+  display: inline-block;
+  padding-left: 100%;
+  color: #fff;
+  font-style: italic;
+  font-size: 15px;
+  animation: marquee-run 18s linear infinite;
+}
+
+
+@keyframes marquee-run { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+/* =====================================================
+   CÂY GIA PHẢ – NỀN TRỐNG ĐỒNG (CỐ ĐỊNH)
+===================================================== */
+
+#tree-wrapper {
+  position: relative;
+  overflow: hidden;
+  min-height: 420px;
+  background: #fdfbf6;
+}
+
+/* TRỐNG ĐỒNG */
+#tree-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background-image: url("/store/trongdong.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 330px;
+
+  animation: rotateTrongDong 120s linear infinite;
+  transform-origin: center center;
+
+  opacity: 0.35;   /* dịu */
+  pointer-events: none;
+  z-index: 0;
+}
+
+
+/* SVG nằm trên */
+#tree-scroll {
+  position: relative;
+  z-index: 1;
+
+  width: 100%;
+  height: 600px;
+
+  overflow: auto;              /* 🔑 QUAN TRỌNG */
+  background: transparent;
+  border: 1px solid #ccc;
+}
+
+
+.genealogy-list {
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+.chi-title {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.doi-block {
+  margin-bottom: 12px;
+}
+
+.doi-title {
+  font-weight: bold;
+  margin: 6px 0;
+}
+
+.doi-names {
+  list-style: none;
+  padding-left: 20px;
+  margin: 0;
+}
+
+.person-item {
+  cursor: pointer;
+  padding: 2px 0;
+}
+
+.person-item:hover {
+  color: #c0392b;
+  text-decoration: underline;
+}
+
+.doi-title.clickable {
+  cursor: pointer;
+}
+
+.doi-title.clickable:hover {
+  color: #c0392b;
+}
+
+
+/* keyframes */
+@keyframes rotateTrongDong {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+
+/* svg */
+#genealogy-svg {
+  display: block;
+  min-width: 1400px;
+  min-height: 600px;
+  transform-origin: 0 0;
+}
+
+/* node */
+.node rect {
+  fill: #fff;
+  stroke: #1e4db7;
+  stroke-width: 1.4;
+  rx: 8;
+}
+.node text {
+  font-size: 12px;
+  fill: #000;
+}
+.link {
+  stroke: #888;
+  stroke-width: 1.1;
+}
+
+/* mobile */
+@media (max-width: 768px) {
+  #tree-wrapper {
+    background-size: 380px;
+  }
+}
+
+#tree-wrapper {
+  position: relative;
+  overflow: hidden;
+  min-height: 420px;
+  background: #fdfbf6;
+}
+
+
+/* SVG nằm trên */
+#tree-scroll {
+  position: relative;
+  z-index: 1;
+  background: transparent;
+}
+
+/* keyframes */
+@keyframes rotateTrongDong {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* =====================================================
+   LIST CHI / ĐỜI – BÊN TRÁI, TRONG SUỐT
+===================================================== */
+
+.genealogy-list {
+  position: absolute;
+  top: 12px;
+font-size: 13.5px;
+  left: 12px;
+
+  z-index: 2;
+
+  background: rgba(255, 255, 255, 0.65); /* trong suốt */
+  backdrop-filter: blur(4px);           /* mờ nhẹ (nếu trình duyệt hỗ trợ) */
+
+  padding: 10px 16px;
+  border-radius: 8px;
+
+  max-height: calc(100% - 24px);
+  overflow-y: auto;
+
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+.chi-title,
+.doi-title {
+  text-align: left;
+}
+
+/* =====================================================
+   PERSON INFO
+===================================================== */
+.filters { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 13px; margin-bottom: 10px; }
+.filters select, .filters button { padding: 4px 6px; font-size: 13px; }
+
+#person-info, #person-spouse, #person-children {
+  margin-top: 10px; padding: 8px;
+  background: #fff; border: 1px solid #ddd; border-radius: 4px; font-size: 18px;
+}
+
+.info-row { display: grid; grid-template-columns: 110px 1fr; font-size: 14px; margin: 1px 0; }
+.info-label { font-weight: 700; }
+.info-value { font-weight: normal; }
+
+.info-title { font-weight: bold; font-size: 20px; color: #1e4db7; margin-bottom: 4px; }
+.child-item { cursor: pointer; color: #0b5ed7; }
+.child-item:hover { text-decoration: underline; }
+.info-card { background: #f9fbff; padding: 10px; border-radius: 8px; margin-bottom: 8px; }
+.spouse-card { background: #f4f8ff; }
+.children-box { margin-top: 6px; padding-left: 10px; }
+.info-avatar { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 8px; }
+
+/* =====================================================
+   FIX LAYOUT 2 CỘT – CÂY + THÔNG TIN (CHỐT)
+===================================================== */
+
+.content-row {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  align-items: stretch;
+}
+
+.tree-column {
+  flex: 0 0 65%;
+  max-width: 65%;
+  min-width: 0; /* 🔑 chống tràn SVG */
+}
+
+.info-column {
+  flex: 0 0 35%;
+  max-width: 35%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* mobile: xếp dọc */
+@media (max-width: 900px) {
+  .content-row {
+    flex-direction: column;
+  }
+
+  .tree-column,
+  .info-column {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+}
+
+/* =====================================================
+   MEDIA (ẢNH, CLIP, YOUTUBE, MAP)
+===================================================== */
+.info-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
+
+.info-box.square {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  padding: 6px;
+  overflow: hidden;
+}
+.info-box.square h4 { font-size: 17px; margin: 0 0 6px; text-align: center; }
+.info-box.square > *:not(h4) { font-size: 13px; overflow-y: auto; max-height: calc(100% - 22px); }
+
+.image-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; }
+.image-grid img { width: 100%; height: 100%; object-fit: cover; border-radius: 4px; }
+
+.info-box.square iframe { width: 100%; height: calc(100% - 22px); border: none; border-radius: 6px; }
+
+.map-row iframe { width: 100%; height: 280px; border: none; border-radius: 8px; margin-top: 10px; }
+
+.tag-new { font-size: 10px; background: #e53935; color: #fff; padding: 1px 6px; border-radius: 10px; }
+
+.list, .timeline { overflow-y: auto; max-height: 100%; display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+.list-item, .timeline-item, .media-item { display: flex; align-items: center; gap: 6px; padding: 4px 2px; border-bottom: 1px dashed #ccc; cursor: pointer; }
+.list-item a, .media-item { flex: 1; text-decoration: none; color: #222; }
+.timeline-item img, .media-item img { width: 48px; height: 36px; object-fit: cover; border-radius: 4px; flex-shrink: 0; }
+.timeline-item span, .media-item span { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px; }
+.timeline-item:hover, .media-item:hover { background: rgba(0,0,0,0.05); }
+
+/* Image viewer */
+#img-viewer { position: fixed; inset: 0; background: rgba(0,0,0,.8); display: none; align-items: center; justify-content: center; z-index: 9999; }
+#img-viewer.show { display: flex; }
+#img-viewer img { max-width: 90%; max-height: 90%; border-radius: 8px; }
+#img-viewer span { position: absolute; top: 12px; right: 16px; font-size: 28px; color: #fff; cursor: pointer; }
+
+/* Popup Clip / YouTube */
+#clip-popup, #youtube-popup {
+  position: fixed; bottom: 20px; right: 20px;
+  width: 320px; height: 180px;
+  background: #fff; border: 1px solid #888; border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  z-index: 999; overflow: hidden; display: none; pointer-events: auto;
+}
+#clip-popup.show, #youtube-popup.show { display: block; }
+#clip-popup iframe, #youtube-popup iframe { width: 100%; height: 100%; border: none; border-radius: 6px; }
+#clip-popup button, #youtube-popup button {
+  position: absolute; top: 4px; right: 4px;
+  font-size: 16px; padding: 2px 6px;
+  cursor: pointer; background: rgba(0,0,0,0.6); color: #fff;
+  border: none; border-radius: 3px;
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+footer { background: #222; color: #fff; padding: 10px 13px; position: relative;font-size: 14px;color: #ffeb3b; padding: 2px 6px; }
+.footer-grid { display: flex; justify-content: space-between; }
+#admin-lock { position: absolute; right: 10px; top: 10px; cursor: pointer; }
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+@media (max-width: 900px) {
+  .info-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+}
+@media (max-width: 700px) {
+  .info-grid { grid-template-columns: 1fr; gap: 4px; }
+
+  #genealogy-svg rect { width: 160px !important; height: 50px !important; }
+  #genealogy-svg image { width: 36px !important; height: 36px !important; }
+  #genealogy-svg text { font-size: 11px !important; }
+
+  #clip-popup, #youtube-popup { width: 240px; height: 135px; }
+  #clip-popup button, #youtube-popup button { font-size: 14px; padding: 2px 4px; }
+
+  #box-videos .timeline-item, #box-youtube .timeline-item { gap: 4px; padding: 2px 1px; }
+  #box-videos .timeline-item img, #box-youtube .timeline-item img { width: 36px; height: 27px; }
+  #box-videos .timeline-item span, #box-youtube .timeline-item span { font-size: 12px; }
+
+  #person-info .info-row, #person-spouse .info-row, #person-children .info-row { margin: 6px 0; line-height: 1.5; }
+  #person-info .info-title, #person-spouse .info-title, #person-children .info-title { font-size: 14px; color: #1e4db7; }
+}
+@media (max-width: 520px) {
+  .info-grid { grid-template-columns: 1fr; gap: 4px; }
+  #clip-popup, #youtube-popup { width: 200px; height: 120px; }
+  #clip-popup button, #youtube-popup button { font-size: 12px; padding: 2px 3px; }
+
+  #box-videos .timeline-item img, #box-youtube .timeline-item img { width: 32px; height: 24px; }
+  #box-videos .timeline-item span, #box-youtube .timeline-item span { font-size: 11px; }
+
+  #genealogy-svg rect { width: 140px !important; height: 45px !important; }
+  #genealogy-svg image { width: 32px !important; height: 32px !important; }
+  #genealogy-svg text { font-size: 10px !important; }
+}
+
+/* ================= MOBILE HEADER SCROLL ================= */
+@media (max-width: 700px) {
+  #site-header {
+    overflow-x: auto;      /* cho scroll ngang */
+    overflow-y: hidden;
+  }
+
+  .header-inner {
+    flex-wrap: nowrap;     /* KHÔNG xuống dòng */
+    width: max-content;    /* nội dung dài bao nhiêu thì kéo bấy nhiêu */
+    gap: 16px;
+  }
+
+  .header-left,
+  .header-right {
+    flex-shrink: 0;        /* không bị ép nhỏ */
+  }
+
+  /* avatar không bị co */
+  .logo,
+  .chief-avatar,
+  .branch {
+    flex-shrink: 0;
+  }
+}
+
+/* ================= MOBILE MAIN ORDER ================= */
+@media (max-width: 700px) {
+  .content-row {
+    flex-direction: column;   /* xếp dọc */
+  }
+
+  .tree-column,
+  .info-column {
+    max-width: 100%;
+    flex: none;
+  }
+
+  .tree-column {
+    order: 1;   /* cây trước */
+  }
+
+  .info-column {
+    order: 2;   /* thông tin sau */
+  }
+
+  /* cây gia phả thấp hơn để dễ cuộn */
+  #tree-scroll {
+    height: 300px;
+  }
+}

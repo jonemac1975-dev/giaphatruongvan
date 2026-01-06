@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GiaPhả Việt</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header id="site-header">
+
+  <div class="header-inner">
+    <div class="header-left">
+  <div class="logo">
+  <img src="store/logo.png" alt="Logo">
+</div>
+
+           <div class="title">
+        <div class="title-main">HIỀN LƯƠNG AN HỘI</div>
+        <div class="title-sub">GIA PHẢ  Trương Văn</div>
+      </div>
+    </div>
+
+    <div class="header-right">
+
+      <!-- ===== TRƯỞNG HỌ ===== -->
+      <div class="chief-avatar glow">
+        <img id="img-chief" />
+        <div class="avatar-label">Trưởng họ</div>
+      </div>
+
+      <!-- ===== CÁC CHI ===== -->
+      <div class="avatars">
+
+        <div class="branch glow" data-chi="Chi Bá">
+          <img />
+          <div class="avatar-label">Bá</div>
+        </div>
+
+        <div class="branch glow" data-chi="Chi Mạnh">
+          <img />
+          <div class="avatar-label">Mạnh</div>
+        </div>
+
+        <div class="branch glow" data-chi="Chi Trọng">
+          <img />
+          <div class="avatar-label">Trọng</div>
+        </div>
+
+        <div class="branch glow" data-chi="Chi Quý">
+          <img />
+          <div class="avatar-label">Quý</div>
+        </div>
+
+        <div class="branch glow" data-chi="Chi Thúc">
+          <img />
+          <div class="avatar-label">Thúc</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="header-marquee">
+    <div class="marquee-text">
+      Chúc mừng năm mới! Gia tộc Trương vững mạnh – đoàn kết – phát triển bền lâu
+    </div>
+  </div>
+
+</header>
+
+<!-- ================= MAIN ================= -->
+<main>
+
+  <div class="content-row">
+<!-- ================= CỘT CÂY GIA PHẢ ================= -->  
+<div class="tree-column">
+    <div class="panel">
+      <h3>Cây gia phả</h3>
+
+      <div class="hint">
+        Nhấn avatar để xem cây gia phả cả họ hoặc từng chi
+      </div>
+
+      Zoom:
+      <input type="range" id="zoomRange" min="50" max="150" value="100">
+
+      <!-- 👉 WRAPPER ĐỂ ẨN / HIỆN CÂY -->
+      <div id="tree-wrapper">
+        <div id="tree-scroll">
+          <svg id="genealogy-svg"></svg>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<div id="tooltip" style="
+  position: absolute;
+  background: rgba(0,0,0,0.75);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  pointer-events: none;
+  display: none;
+  z-index: 1000;
+"></div>
+
+
+  <!-- ================= CỘT THÔNG TIN ================= -->
+  <div class="info-column">
+    <div class="panel">
+      <h3>Thông tin cá nhân</h3>
+
+      <div class="filters">
+        <b>Chi:</b>
+        <select id="chi">
+          <option value="">Chọn chi</option>
+        </select>
+
+        <b>Đời:</b>
+        <select id="doi">
+          <option value="">Chọn đời</option>
+        </select>
+
+        <b>Tên:</b>
+        <select id="ten">
+          <option value="">Chọn tên</option>
+        </select>
+
+        <button id="btn-search">Tìm</button>
+      </div>
+
+      <!-- 👉 WRAPPER ĐỂ ẨN / HIỆN INFO -->
+      <div id="info-wrapper" class="hidden">
+        <div id="person-info"></div>
+        <div id="person-spouse"></div>
+        <div id="person-children"></div>
+        <div id="btn-timmom-wrap"></div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+
+
+
+<!-- ===== TIMELINE INFO ===== -->
+<div class="info-grid">
+
+  <div class="info-box square" id="box-thongbao"></div>
+  <div class="info-box square" id="box-images"></div>
+  <div class="info-box square" id="box-videos"></div>
+  <div class="info-box square" id="box-youtube"></div>
+
+</div>
+
+<!-- ===== GOOGLE MAP ===== -->
+<div class="map-row" style="max-width:1200px;margin:0 auto;">
+  <iframe
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3824.511026180731!2d107.4616187733748!3d16.55076548420068!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x314107475e5e99e1%3A0xa41d602da7ee8b40!2zQ2jDuWEgR2nDoWMgTMawxqFuZw!5e0!3m2!1svi!2s!4v1767502198524!5m2!1svi!2s"
+    width="100%" height="400"
+    style="border:0;"
+    allowfullscreen=""
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade">
+  </iframe>
+</div>
+
+
+
+
+
+
+
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="footer-grid">
+    <div>Địa chỉ: HIỀN LƯƠNG - AN HỘI</div>
+    <div>Written by : Trương Văn Thành - Chi Mạnh</div>
+    <div>Gmail: giaphatruongvan2025gmail.com</div>
+    <div>Zalo: 0982 175 887</div>
+    <div>Facebook: https://www.facebook.com/truongthanh101071</div>
+  </div>
+
+  <!-- Admin lock -->
+  <div id="admin-lock">🔒</div>
+</footer>
+
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

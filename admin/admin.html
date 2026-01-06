@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Admin – Gia phả Việt</title>
+<link rel="stylesheet" href="/admin/assets/css/admin.css">
+
+</head>
+
+<body>
+
+<!-- ===== LOGIN CHECK ===== -->
+<script>
+(function () {
+  const login = sessionStorage.getItem("ADMIN_LOGIN");
+  const time  = sessionStorage.getItem("ADMIN_TIME");
+
+  // chưa login
+  if (!login || !time) {
+    location.href = "./login.html";
+    return;
+  }
+
+  // timeout 30 phút
+  const MAX = 30 * 60 * 1000;
+  if (Date.now() - Number(time) > MAX) {
+    sessionStorage.clear();
+    alert("Hết phiên đăng nhập");
+    location.href = "./login.html";
+  }
+})();
+</script>
+
+
+
+<!-- ===== HEADER ===== -->
+<header>
+  <b>QUẢN LÝ GIA PHẢ</b>
+  <div>
+    <a href="/">Home</a>
+   <a href="javascript:void(0)" onclick="openChangePass()">Đổi pass</a>
+    <a href="#">Backup</a>
+    <a href="#">Restore</a>
+  </div>
+</header>
+
+<!-- ===== TAB MENU ===== -->
+<div class="tabs">
+  <button class="active" data-tab="tab1">1. Cá nhân</button>
+  <button data-tab="tab2">2. Trưởng họ</button>
+  <button data-tab="tab3">3. Thông tin</button>
+  <button data-tab="tab4">4. Ảnh sự kiện</button>
+  <button data-tab="tab5">5. Clip sự kiện</button>
+  <button data-tab="tab6">6. Youtube</button>
+  <button data-tab="tab7">7. Ảnh nền Head</button>
+  <button data-tab="tab8">8. Danh sách Chi</button>
+</div>
+
+
+
+
+<!-- ====================== TAB 1 – NHẬP LIỆU CÁ NHÂN ====================== -->
+<div id="tab1" class="tab-content active">
+  <div class="wrap">
+
+    <!-- LEFT: FORM NHẬP LIỆU -->
+    <div class="left">
+      <h3>1. Nhập thông tin cá nhân</h3>
+
+      <!-- Nhóm Chi – Đời – Tên + Button Tìm/Thêm/Xóa/Lưu -->
+      <div class="group">
+        <div class="field">
+          <label>Chi</label>
+          <select id="id-chinhap"></select>
+        </div>
+        <div class="field">
+          <label>Đời</label>
+          <select id="id-doinhap"></select>
+        </div>
+        <div class="field">
+          <label>Tên</label>
+          <select id="id-tennhap"></select>
+        </div>
+        <div class="buttons">
+          <button id="btnTim">Tìm</button>
+          <button id="btnThem">Thêm</button>
+          <button id="btnXoa">Xóa</button>
+          <button id="btnLuu">Lưu</button>
+        </div>
+      </div>
+
+      <!-- Nhóm Ảnh -->
+      <div class="group">
+        <div class="field">
+          <label>Ảnh</label>
+          <input type="file" id="id-anh">
+        </div>
+        <div class="buttons">
+          <button id="btnXoaAnh">Xóa ảnh</button>
+        </div>
+        <img id="previewAnh">
+      </div>
+
+      <!-- Nhóm Clip -->
+      <div class="group">
+        <div class="field">
+          <label>Clip</label>
+          <input id="id-clip">
+        </div>
+        <div class="buttons">
+          <button id="btnXoaClip">Xóa clip</button>
+        </div>
+      </div>
+
+      <!-- Nhóm thông tin chi tiết -->
+      <div class="group">
+        <div class="field"><label>Họ và tên</label><input id="id-hovaten"></div>
+        <div class="field"><label>Thường gọi</label><input id="id-thuonggoi"></div>
+        <div class="field"><label>Chi</label><select id="id-chinhap-form"></select></div>
+        <div class="field"><label>Đời</label><input id="id-doinhap-form" type="number" min="0" step="1"></div>
+        <div class="field"><label>Cha</label><select id="id-cha"></select></div>
+        <div class="field"><label>Mẹ</label><select id="id-me"></select></div>
+        <div class="field"><label>Nghề</label><input id="id-nghiep"></div>
+        <div class="field"><label>Sinh</label><input id="id-sinh"></div>
+        <div class="field"><label>Mất</label><input id="id-mat"></div>
+        <div class="field"><label>Mộ táng</label><input id="id-motang"></div>
+        <div class="field"><label>Maps</label><input id="id-map"></div>
+        <div class="field"><label>Ghi chú</label><textarea id="id-ghichu"></textarea></div>
+        <div class="field"><label>Sinh hạ</label><input id="id-sinhha"></div>
+      </div>
+
+      <!-- Nhóm Vợ / Con -->
+      <div class="group">
+        <h4>Vợ / Chồng - Con</h4>
+
+        <!-- Container vợ -->
+        <div id="vo-container"></div>
+
+        <!-- Container con -->
+        <div id="con-container"></div>
+
+        <!-- Nút thêm vợ / con -->
+        <div class="buttons">
+          <button id="btnThemVo">Thêm vợ</button>
+          
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: DANH SÁCH / CÂY GIA PHẢ -->
+    <div class="right">
+      <h3>Danh sách gia phả</h3>
+      <div id="tree"></div>
+    </div>
+
+  </div>
+</div>
+
+
+
+
+
+<!-- ================================================= -->
+<!-- =========== TAB 2 : TRƯỞNG HỌ =================== -->
+<!-- ================================================= -->
+<div id="tab2" class="tab-content">
+
+<h3>2. Danh sách Trưởng họ – Trưởng chi</h3>
+
+<div class="group">
+  <label>Ảnh</label>
+  <input type="file" id="id-anhtruong" accept="image/*">
+  <img id="preview-anhtruong" style="max-width:90px;margin-top:8px;display:none;">
+</div>
+
+<div class="group">
+  <label>Họ và tên</label>
+  <input id="id-hovaten-truong">
+
+  <label>Đời</label>
+  <input id="id-doitruong">
+
+  <label>Chi</label>
+  <select id="id-chitruong">
+    <option value="">-- chọn chi --</option>
+  </select>
+  <button id="btn-add-truong">Thêm</button>
+  <button id="btn-save-truong">Lưu</button>
+</div>
+<table>
+  <thead>
+    <tr>
+      <th>STT</th>
+      <th>Ảnh</th>
+      <th>Họ tên</th>
+      <th>Đời</th>
+      <th>Chi</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="truong-list"></tbody>
+</table>
+</div>
+
+<!-- ================================================= -->
+<!-- =========== TAB 3 : THÔNG TIN – THÔNG BÁO ======= -->
+<!-- ================================================= -->
+<div id="tab3" class="tab-content">
+
+  <h3>3. Thông tin – Thông báo</h3>
+
+  <!-- ===== FORM NHẬP THÔNG BÁO ===== -->
+  <div class="group">
+
+    <label for="notice-title">Tiêu đề thông báo</label>
+    <input id="notice-title" type="text" placeholder="Nhập tiêu đề..." />
+
+    <label for="notice-summary">Tóm tắt (hiển thị trên index)</label>
+    <input id="notice-summary" type="text" placeholder="Nhập mô tả ngắn..." />
+
+    <label for="notice-content">Nội dung chi tiết</label>
+<div style="margin:6px 0">
+  <input type="file" id="notice-image" accept="image/*" hidden>
+  <button type="button" id="btn-insert-image">📷 Chèn ảnh</button>
+</div>
+
+    <textarea id="notice-content" rows="6" placeholder="Nhập nội dung thông báo..."></textarea>
+
+    <label for="notice-link">Link đính kèm (nếu có)</label>
+    <input id="notice-link" type="text" placeholder="https://..." />
+
+    <div class="actions">
+      <button id="notice-add">Thêm</button>
+      <button id="notice-save" disabled>Lưu</button>
+
+      <button id="notice-clear" type="button">Xoá form</button>
+    </div>
+
+  </div>
+
+  <!-- ===== DANH SÁCH THÔNG BÁO ===== -->
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th style="width:60px">STT</th>
+        <th>Tiêu đề</th>
+        <th style="width:120px">Ngày</th>
+        <th style="width:100px">Preview</th>
+        <th style="width:80px">Xoá</th>
+      </tr>
+    </thead>
+    <tbody id="notice-list">
+      <!-- JS render -->
+    </tbody>
+  </table>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- =========== TAB 4 : ẢNH SỰ KIỆN ================= -->
+<!-- ================================================= -->
+<div id="tab4" class="tab-content">
+
+  <h3>4. Ảnh sự kiện</h3>
+
+  <!-- ===== FORM ===== -->
+  <div class="group">
+
+    <label>Tiêu đề sự kiện</label>
+    <input id="event-title" type="text" placeholder="VD: Lễ giỗ tổ 2024">
+
+    <label>Ngày sự kiện</label>
+    <input id="event-date" type="date">
+
+    <label>Link chi tiết (nếu có)</label>
+    <input id="event-link" type="text" placeholder="https://...">
+
+    <label>Ảnh sự kiện</label>
+    <input id="event-file" type="file" accept="image/*">
+
+    <button id="event-add">Thêm ảnh</button>
+  </div>
+
+  <!-- ===== LIST ===== -->
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th style="width:60px">STT</th>
+        <th>Ảnh</th>
+        <th>Tiêu đề</th>
+        <th style="width:120px">Ngày</th>
+        <th style="width:80px">Xoá</th>
+      </tr>
+    </thead>
+    <tbody id="event-list"></tbody>
+  </table>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- =========== TAB 5 : CLIP SỰ KIỆN ================ -->
+<!-- ================================================= -->
+<div id="tab5" class="tab-content">
+
+  <h3>5. Clip sự kiện</h3>
+
+  <div class="group">
+    <label>Nội dung</label>
+    <input id="clip-title" placeholder="Tiêu đề clip">
+
+    <label>Link clip (mp4 / youtube / drive)</label>
+    <input id="clip-link" placeholder="https://...">
+
+    <button id="clip-add">Thêm</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>STT</th>
+        <th>Nội dung</th>
+        <th>Link</th>
+        <th>Preview</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="clip-list"></tbody>
+  </table>
+
+</div>
+
+<!-- ================================================= -->
+<!-- =========== TAB 6 : YOUTUBE ===================== -->
+<!-- ================================================= -->
+<div id="tab6" class="tab-content">
+
+<h3>6. Youtube</h3>
+
+<div class="group">
+  <label>Nội dung</label>
+  <input id="yt-title">
+
+  <label>Link Youtube</label>
+  <input id="yt-link" placeholder="https://youtube.com/...">
+
+  <button id="yt-add">Thêm</button>
+</div>
+
+<table>
+<thead>
+<tr>
+  <th>STT</th>
+  <th>Nội dung</th>
+  <th>Link</th>
+  <th>Preview</th>
+  <th></th>
+</tr>
+</thead>
+<tbody id="yt-list"></tbody>
+</table>
+
+</div>
+
+<!-- ================================================= -->
+<!-- =========== TAB 7 : ẢNH NỀN HEAD ================ -->
+<!-- ================================================= -->
+<div id="tab7" class="tab-content">
+
+<h3>7. Ảnh nền Head</h3>
+
+<div class="group">
+  <label>Nội dung</label>
+  <input id="bg-title">
+
+  <label>Chọn ảnh</label>
+  <select id="bg-name">
+    <option value="anh1.png">anh1.png</option>
+    <option value="anh2.png">anh2.png</option>
+    <option value="anh3.png">anh3.png</option>
+  </select>
+
+  <input type="file" id="bg-file" accept="image/*">
+
+  <button id="bg-add">Thêm</button>
+</div>
+
+<table>
+<thead>
+<tr>
+  <th>STT</th>
+  <th>Nội dung</th>
+  <th>File</th>
+  <th>Preview</th>
+  <th></th>
+</tr>
+</thead>
+<tbody id="bg-list"></tbody>
+</table>
+
+</div>
+<!-- ================================================= -->
+<!-- =========== TAB 8 : DANH MỤC CHI ================ -->
+<!-- ================================================= -->
+<div id="tab8" class="tab-content">
+
+<h3>8. Danh mục Chi</h3>
+
+<div class="group">
+  <label>Tên chi</label>
+  <input id="chi-name">
+  <button id="chi-add">Thêm</button>
+</div>
+
+<table>
+<thead>
+<tr>
+  <th>STT</th>
+  <th>Tên chi</th>
+  <th></th>
+</tr>
+</thead>
+<tbody id="chi-list"></tbody>
+</table>
+
+</div>
+
+
+<!-- ===== JS ===== -->
+<script type="module" src="/admin/assets/js/admin.js"></script>
+<script type="module" src="/admin/assets/js/tab1.js"></script>
+<script type="module" src="/admin/assets/js/tab2.js"></script>
+<script type="module" src="/admin/assets/js/tab3.js"></script>
+<script type="module" src="/admin/assets/js/tab4.js"></script>
+<script type="module" src="/admin/assets/js/tab5.js"></script>
+<script type="module" src="/admin/assets/js/tab6.js"></script>
+<script type="module" src="/admin/assets/js/tab7.js"></script>
+<script type="module" src="/admin/assets/js/tab8.js"></script>
+<script type="module" src="/admin/assets/js/change-pass.js"></script>
+
+
+
+<!-- ===== CHANGE PASSWORD MODAL ===== -->
+<div id="change-pass-modal" class="modal hidden">
+  <div class="modal-box">
+    <h3>Đổi mật khẩu</h3>
+
+    <select id="cp-chi">
+      <option value="">-- chọn chi --</option>
+      <option value="admin">Admin</option>
+      <option value="ba">Bá</option>
+      <option value="manh">Mạnh</option>
+      <option value="trong">Trọng</option>
+      <option value="quy">Quý</option>
+      <option value="thuc">Thúc</option>
+    </select>
+
+    <input type="password" id="cp-old" placeholder="Mật khẩu hiện tại">
+    <input type="password" id="cp-new" placeholder="Mật khẩu mới">
+    <input type="password" id="cp-new2" placeholder="Nhập lại mật khẩu mới">
+
+    <div class="modal-actions">
+      <button id="cp-save" type="button">Lưu</button>
+      <button id="cp-cancel" type="button">Hủy</button>
+
+    </div>
+  </div>
+</div>
+
+
+
+</body>
+</html>

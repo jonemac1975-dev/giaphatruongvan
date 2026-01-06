@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Login</title>
+  <link rel="stylesheet" href="./assets/css/admin.css">
+
+  <style>
+    body { font-family: Arial, sans-serif; background:#111; }
+    .login-box {
+      width: 360px;
+      margin: 80px auto;
+      background: #fff;
+      border-radius: 4px;
+      padding: 16px;
+    }
+    .login-box h3 {
+      margin: 0 0 12px;
+      text-align: center;
+    }
+    .row { margin-bottom: 10px; }
+    label { display:inline-block; width: 80px; }
+    select, input { width: 220px; padding: 4px; }
+    .actions { text-align: center; margin-top: 12px; }
+    button { padding: 6px 14px; margin: 0 6px; }
+    .err { color: red; text-align:center; display:none; }
+  </style>
+</head>
+<body>
+
+<div class="login-box">
+  <h3>Đăng nhập</h3>
+
+  <div class="row">
+    <label>Chọn</label>
+    <select id="chi">
+  <option value="">-- chọn chi --</option>
+  <option value="admin">admin</option>
+  <option value="ba">Bá</option>
+  <option value="manh">Mạnh</option>
+  <option value="trong">Trọng</option>
+  <option value="quy">Quý</option>
+  <option value="thuc">Thúc</option>
+</select>
+
+  </div>
+
+  <div class="row">
+    <label>Pass</label>
+    <input type="password" id="pass" />
+  </div>
+
+  <div class="err" id="err">Sai mật khẩu</div>
+
+  <div class="actions">
+    <button id="btnOk">Xác nhận pass</button>
+    <button onclick="window.location.href='/'">Hủy</button>
+  </div>
+</div>
+
+<script type="module">
+ import { checkPassword } from "../src/services/firebaseService.js";
+
+
+  const btn = document.getElementById('btnOk');
+  const err = document.getElementById('err');
+
+  btn.onclick = async () => {
+    const chi = document.getElementById('chi').value;
+    const pass = document.getElementById('pass').value;
+
+    if (!chi || !pass) return;
+
+    const ok = await checkPassword(chi, pass);
+
+    if (!ok) {
+      err.style.display = 'block';
+      return;
+    }
+
+    sessionStorage.setItem('ADMIN_LOGIN', chi);
+    sessionStorage.setItem('ADMIN_TIME', Date.now());
+    window.location.href = 'admin.html';
+
+  };
+</script>
+
+</body>
+</html>
