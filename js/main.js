@@ -128,6 +128,23 @@ async function loadPeople() {
 // TREE – 3 GENERATION ONLY (FINAL, STABLE)
 // =====================================================
 
+const IS_MOBILE = window.innerWidth <= 768;
+const MOBILE_COL_X = {
+  0: 40,    // CHA
+  1: 260,   // NGƯỜI ĐANG XEM
+  2: 480    // CON
+};
+
+const CHILD_GAP_DESKTOP = 8;   // mặc định ~15 → giảm cho sít
+const CHILD_GAP_MOBILE  = 6;  // mobile nên nhỏ hơn
+
+const NODE_W = 200;
+const NODE_H = IS_MOBILE ? 48 : 55;   // 🔑 mobile thấp hơn
+
+const nameY = IS_MOBILE ? 22 : 30;
+const metaY = IS_MOBILE ? 36 : 46;
+
+
 function render3GenTree(centerPerson) {
   const svg = document.getElementById("genealogy-svg");
   if (!svg || !centerPerson) return;
@@ -146,7 +163,10 @@ function render3GenTree(centerPerson) {
   children.forEach(c => nodes.push({ ...c, _level: 2 }));
 
   // ===== LAYOUT CỐ ĐỊNH =====
-  const NODE_W = 200, NODE_H = 55, GAP_X = 15, GAP_Y = 90; // GAP_X nhỏ hơn để các con gần nhau
+ // GAP_X nhỏ hơn để các con gần nhau
+  const GAP_X = 15;
+  const GAP_Y = 90;
+
 
   const levelGroups = {
     0: nodes.filter(n => n._level === 0),
@@ -155,35 +175,77 @@ function render3GenTree(centerPerson) {
   };
 
   const pos = {};
-  Object.entries(levelGroups).forEach(([level, list]) => {
-    const y = 40 + level * GAP_Y;
+  
 
-    if (level == 2 && list.length > 0) {
-      // căn giữa các con theo cha
-      const parentId = list[0].fatherId;
-      const parentX = pos[parentId]?.x || 40;
-      const totalWidth = list.length * NODE_W + (list.length - 1) * GAP_X;
-      let startX = parentX + NODE_W/2 - totalWidth/2;
-      list.forEach((n, i) => {
-        pos[n.id] = { x: startX + i * (NODE_W + GAP_X), y };
-      });
-    } else {
-      // layout mặc định
-      let startX = 40;
-      list.forEach((n, i) => {
-        pos[n.id] = { x: startX + i * (NODE_W + GAP_X), y };
-      });
-    }
-  });
+// ===== PASS 1: VẼ NODE CON =====
+Object.entries(levelGroups).forEach(([level, list]) => {
+  if (level != 2) return;
+
+  if (IS_MOBILE) {
+    let startY = 40;
+    list.forEach((n, i) => {
+      pos[n.id] = {
+        x: MOBILE_COL_X[2],
+        y: startY + i * (NODE_H + CHILD_GAP_MOBILE)
+      };
+    });
+
+    const firstY = pos[list[0].id].y;
+    const lastY = pos[list[list.length - 1].id].y + NODE_H;
+    window.__treeCenterY = firstY + (lastY - firstY) / 2 - NODE_H / 2;
+
+  } else {
+    const y = 40 + 2 * GAP_Y;
+    const parentId = list[0].fatherId;
+    const parentX = pos[parentId]?.x || 40;
+
+    const totalWidth = list.length * NODE_W + (list.length - 1) * CHILD_GAP_DESKTOP;
+let startX = parentX + NODE_W / 2 - totalWidth / 2;
+
+list.forEach((n, i) => {
+  pos[n.id] = {
+    x: startX + i * (NODE_W + CHILD_GAP_DESKTOP),
+    y
+  };
+});
+    const firstX = pos[list[0].id].x;
+    const lastX = pos[list[list.length - 1].id].x + NODE_W;
+    window.__treeCenterX = firstX + (lastX - firstX) / 2 - NODE_W / 2;
+  }
+});
+
+
+Object.entries(levelGroups).forEach(([level, list]) => {
+  if (level == 2) return;
+
+  if (IS_MOBILE) {
+    list.forEach(n => {
+      pos[n.id] = {
+        x: MOBILE_COL_X[level],
+        y: window.__treeCenterY
+      };
+    });
+  } else {
+    const y = 40 + level * GAP_Y;
+    list.forEach(n => {
+      pos[n.id] = {
+        x: window.__treeCenterX,
+        y
+      };
+    });
+  }
+});
+
 
   // ===== FIX SVG SIZE + VIEWBOX =====
   let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-  Object.values(pos).forEach(p => {
-    minX = Math.min(minX, p.x);
-    maxX = Math.max(maxX, p.x + NODE_W);
-    minY = Math.min(minY, p.y);
-    maxY = Math.max(maxY, p.y + NODE_H);
-  });
+  
+Object.values(pos).forEach(p => {
+  minX = Math.min(minX, p.x);
+  maxX = Math.max(maxX, p.x + (IS_MOBILE ? NODE_H : NODE_W));
+  minY = Math.min(minY, p.y);
+  maxY = Math.max(maxY, p.y + (IS_MOBILE ? NODE_W : NODE_H));
+});
 
   const PAD_X = 80, PAD_Y = 60;
   const width = maxX - minX + PAD_X * 2;
@@ -193,17 +255,40 @@ function render3GenTree(centerPerson) {
   svg.setAttribute("height", height);
   svg.setAttribute("viewBox", `${minX - PAD_X} ${minY - PAD_Y} ${width} ${height}`);
 
+
+// ===== AUTO FIT MOBILE VIEW =====
+if (IS_MOBILE) {
+  svg.style.width = "100vw";
+  svg.style.height = "calc(100vh - 140px)"; // trừ header + tab
+  svg.style.maxWidth = "100%";
+  svg.style.maxHeight = "100%";
+}
+
+
   // ===== DÂY NỐI =====
   nodes.forEach(n => {
     if (n.fatherId && pos[n.fatherId] && pos[n.id]) {
       const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+if (IS_MOBILE) {
+  line.setAttribute("x1", pos[n.fatherId].x + NODE_W);
+  line.setAttribute("y1", pos[n.fatherId].y + NODE_H / 2);
+  line.setAttribute("x2", pos[n.id].x);
+  line.setAttribute("y2", pos[n.id].y + NODE_H / 2);
+  line.setAttribute("stroke", "#999");
+  line.setAttribute("stroke-width", "1.2");
+
+} else {
+
       line.setAttribute("x1", pos[n.fatherId].x + NODE_W / 2);
       line.setAttribute("y1", pos[n.fatherId].y + NODE_H);
       line.setAttribute("x2", pos[n.id].x + NODE_W / 2);
       line.setAttribute("y2", pos[n.id].y);
       line.setAttribute("stroke", "#999");
       line.setAttribute("stroke-width", "1.2");
-      svg.appendChild(line);
+}
+     
+
+ svg.appendChild(line);
     }
   });
 
@@ -236,7 +321,7 @@ function render3GenTree(centerPerson) {
     const nameText = p.name || "Không tên";
     const name = document.createElementNS("http://www.w3.org/2000/svg", "text");
     name.setAttribute("x", 56);
-    name.setAttribute("y", 30);
+    name.setAttribute("y", nameY);
     name.setAttribute("font-size", "13");
     name.setAttribute("font-weight", "600");
     name.setAttribute("fill", "#000"); 
@@ -250,12 +335,13 @@ function render3GenTree(centerPerson) {
 
     const meta = document.createElementNS("http://www.w3.org/2000/svg", "text");
     meta.setAttribute("x", 56);
-    meta.setAttribute("y", 46);
+    meta.setAttribute("y", metaY);
     meta.setAttribute("font-size", "11");
     meta.setAttribute("fill", "#666");
     meta.textContent = `${birthText}${doiText ? " – " + doiText : ""}`;
 
     g.append(r, img, name, meta);
+
 
     // click load tiếp 3 đời
     g.addEventListener("click", () => {
