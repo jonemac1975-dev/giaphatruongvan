@@ -135,6 +135,8 @@ const MOBILE_COL_X = {
   2: 480    // CON
 };
 
+let tooltipLocked = false;
+
 const CHILD_GAP_DESKTOP = 8;   // mặc định ~15 → giảm cho sít
 const CHILD_GAP_MOBILE  = 6;  // mobile nên nhỏ hơn
 
@@ -228,8 +230,6 @@ if (!IS_MOBILE && window.__treeCenterX == null) {
 
 
 // ===== PASS 2: VẼ NODE CHA =====
-
-
 Object.entries(levelGroups).forEach(([level, list]) => {
   if (level == 2) return;
 
@@ -249,7 +249,9 @@ Object.entries(levelGroups).forEach(([level, list]) => {
       };
     });
   }
-});
+}); // 👈 BẮT BUỘC: đóng forEach ( )
+
+showTree(); // 👈 nằm NGOÀI
 
 
   // ===== FIX SVG SIZE + VIEWBOX =====
@@ -366,52 +368,69 @@ g.setAttribute(
     meta.textContent = `${birthText}${doiText ? " – " + doiText : ""}`;
 
     g.append(r, img, name, meta);
+   svg.appendChild(g);
 
 
     // click load tiếp 3 đời
-    g.addEventListener("click", () => {
-  if (!p || !p.id) return;
+    if (!IS_MOBILE) {
+  g.addEventListener("click", () => {
+    if (!p || !p.id) return;
 
-  showTree();
-  showInfo();
-  showPersonInfo(p);
-  render3GenTree(p);
-});
+    showTree();
+    showInfo();
+    showPersonInfo(p);
+    render3GenTree(p);
+  });
+}
 
 
-    // hover tooltip
-g.addEventListener("mouseenter", (e) => {
-  if (!tooltip) return;
 
-  // Lấy đời: ưu tiên p.doinhap, nếu không thì p.data.doinhap, nếu không thì ~level
-  const doi = (p.doinhap !== undefined && p.doinhap !== null)
-    ? p.doinhap
-    : (p.data?.doinhap !== undefined ? p.data.doinhap : p._level + 1);
+    // ===== TOOLTIP (PC hover – Mobile tap) =====
+if (tooltip) {
 
-  tooltip.style.display = "block";
-  tooltip.innerHTML = `
-    <strong>${p.name || "Không tên"}</strong><br>
-    Sinh: ${p.birth || "Chưa rõ"}<br>
-    Đời: ${doi}<br> 
-    Chi: ${p.branch || "?"}
-  `;
-});
+  const renderTooltipHTML = () => {
+    const doi = (p.doinhap ?? p.data?.doinhap ?? (p._level + 1));
+    return `
+      <strong>${p.name || "Không tên"}</strong><br>
+      Sinh: ${p.birth || "Chưa rõ"}<br>
+      Đời: ${doi}<br>
+      Chi: ${p.branch || "?"}
+    `;
+  };
 
+  // ===== PC: HOVER =====
+  if (!IS_MOBILE) {
+    g.addEventListener("mouseenter", (e) => {
+      tooltip.innerHTML = renderTooltipHTML();
+      tooltip.style.display = "block";
+    });
 
     g.addEventListener("mousemove", (e) => {
       tooltip.style.left = e.pageX + 15 + "px";
       tooltip.style.top = e.pageY + 15 + "px";
     });
+
     g.addEventListener("mouseleave", () => {
       tooltip.style.display = "none";
     });
+  }
 
-    svg.appendChild(g);
-  });
+  // ===== MOBILE: TAP =====
+  if (IS_MOBILE) {
+    g.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
 
-  showTree();
+      tooltip.innerHTML = renderTooltipHTML();
+      tooltip.style.display = "block";
+      tooltip.style.left = e.pageX + "px";
+      tooltip.style.top = e.pageY + "px";
+    });
+  }
 }
+}); // ❗ ĐÓNG nodes.forEach
 
+} //
 
 
 // =====================================================
@@ -965,3 +984,10 @@ function openImageViewer(src) {
   viewer.querySelector("img").src = src;
   viewer.classList.add("show");
 }
+
+// ===== MOBILE: TAP OUTSIDE TO CLOSE TOOLTIP =====
+document.addEventListener("click", () => {
+  const tooltip = document.getElementById("tooltip");
+  if (tooltip) tooltip.style.display = "none";
+});
+
