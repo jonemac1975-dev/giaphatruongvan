@@ -136,6 +136,8 @@ const MOBILE_COL_X = {
 };
 
 let tooltipLocked = false;
+let activeTooltipPersonId = null;
+
 
 const CHILD_GAP_DESKTOP = 8;   // mặc định ~15 → giảm cho sít
 const CHILD_GAP_MOBILE  = 6;  // mobile nên nhỏ hơn
@@ -315,97 +317,71 @@ if (IS_MOBILE) {
 
   // ===== NODE + TEXT + TOOLTIP =====
   const tooltip = document.getElementById("tooltip");
+let activeTooltipPersonId = null;
 
-  nodes.forEach(p => {
-    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    if (!pos[p.id]) return;
+nodes.forEach(p => {
+  if (!pos[p.id]) return;
 
-g.setAttribute(
-  "transform",
-  `translate(${pos[p.id].x},${pos[p.id].y})`
-);
+  const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+  g.setAttribute(
+    "transform",
+    `translate(${pos[p.id].x},${pos[p.id].y})`
+  );
+  g.style.cursor = "pointer";
 
-    g.style.cursor = "pointer";
+  // rect nền
+  const r = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  r.setAttribute("width", NODE_W);
+  r.setAttribute("height", NODE_H);
+  r.setAttribute("rx", 8);
+  r.setAttribute("fill", "#fff");
+  r.setAttribute("stroke", p.id === centerPerson.id ? "#c0392b" : "#333");
+  r.setAttribute("stroke-width", p.id === centerPerson.id ? "2" : "1");
 
-    // rect nền
-    const r = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-    r.setAttribute("width", NODE_W);
-    r.setAttribute("height", NODE_H);
-    r.setAttribute("rx", 8);
-    r.setAttribute("fill", "#fff");
-    r.setAttribute("stroke", p.id === centerPerson.id ? "#c0392b" : "#333");
-    r.setAttribute("stroke-width", p.id === centerPerson.id ? "2" : "1");
+  // ảnh
+  const img = document.createElementNS("http://www.w3.org/2000/svg", "image");
+  img.setAttribute("x", 6);
+  img.setAttribute("y", 6);
+  img.setAttribute("width", 44);
+  img.setAttribute("height", 44);
+  img.setAttribute("href", p.avatar || "https://via.placeholder.com/44");
 
-    // ảnh
-    const img = document.createElementNS("http://www.w3.org/2000/svg", "image");
-    img.setAttribute("x", 6);
-    img.setAttribute("y", 6);
-    img.setAttribute("width", 44);
-    img.setAttribute("height", 44);
-    img.setAttribute("href", p.avatar || "https://via.placeholder.com/44"); 
+  // tên
+  const name = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  name.setAttribute("x", 56);
+  name.setAttribute("y", nameY);
+  name.setAttribute("font-size", "13");
+  name.setAttribute("font-weight", "600");
+  name.textContent = p.name || "Không tên";
 
-    // tên
-    const nameText = p.name || "Không tên";
-    const name = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    name.setAttribute("x", 56);
-    name.setAttribute("y", nameY);
-    name.setAttribute("font-size", "13");
-    name.setAttribute("font-weight", "600");
-    name.setAttribute("fill", "#000"); 
-    name.textContent = nameText;
+  // meta
+  const doi = (p.doinhap ?? p.data?.doinhap ?? (p._level + 1));
+  const meta = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  meta.setAttribute("x", 56);
+  meta.setAttribute("y", metaY);
+  meta.setAttribute("font-size", "11");
+  meta.setAttribute("fill", "#666");
+  meta.textContent = `${p.birth || "Chưa rõ"} – Đời ${doi}`;
 
-    // năm sinh + đời thực
-    const birthText = p.birth || "Chưa rõ";
-    const doiText = (p.doinhap !== undefined && p.doinhap !== null) 
-  ? `Đời ${p.doinhap}` 
-  : (p.data?.doinhap !== undefined ? `Đời ${p.data.doinhap}` : `Đời ~${p._level + 1}`);
+  g.append(r, img, name, meta);
+  svg.appendChild(g);
 
-    const meta = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    meta.setAttribute("x", 56);
-    meta.setAttribute("y", metaY);
-    meta.setAttribute("font-size", "11");
-    meta.setAttribute("fill", "#666");
-    meta.textContent = `${birthText}${doiText ? " – " + doiText : ""}`;
+  // ===== TOOLTIP HTML =====
+  const renderTooltipHTML = () => `
+    <strong>${p.name || "Không tên"}</strong><br>
+    Sinh: ${p.birth || "Chưa rõ"}<br>
+    Đời: ${doi}<br>
+    Chi: ${p.branch || "?"}
+  `;
 
-    g.append(r, img, name, meta);
-   svg.appendChild(g);
-
-
-    // click load tiếp 3 đời
-    if (!IS_MOBILE) {
-  g.addEventListener("click", () => {
-    if (!p || !p.id) return;
-
-    showTree();
-    showInfo();
-    showPersonInfo(p);
-    render3GenTree(p);
-  });
-}
-
-
-
-    // ===== TOOLTIP (PC hover – Mobile tap) =====
-if (tooltip) {
-
-  const renderTooltipHTML = () => {
-    const doi = (p.doinhap ?? p.data?.doinhap ?? (p._level + 1));
-    return `
-      <strong>${p.name || "Không tên"}</strong><br>
-      Sinh: ${p.birth || "Chưa rõ"}<br>
-      Đời: ${doi}<br>
-      Chi: ${p.branch || "?"}
-    `;
-  };
-
-  // ===== PC: HOVER =====
-  if (!IS_MOBILE) {
-    g.addEventListener("mouseenter", (e) => {
+  // ===== PC: HOVER TOOLTIP =====
+  if (!IS_MOBILE && tooltip) {
+    g.addEventListener("mouseenter", () => {
       tooltip.innerHTML = renderTooltipHTML();
       tooltip.style.display = "block";
     });
 
-    g.addEventListener("mousemove", (e) => {
+    g.addEventListener("mousemove", e => {
       tooltip.style.left = e.pageX + 15 + "px";
       tooltip.style.top = e.pageY + 15 + "px";
     });
@@ -415,22 +391,45 @@ if (tooltip) {
     });
   }
 
-  // ===== MOBILE: TAP =====
-  if (IS_MOBILE) {
-    g.addEventListener("click", (e) => {
+  // ===== CLICK NODE (PC + MOBILE) =====
+  g.addEventListener("click", e => {
+
+    // ===== MOBILE =====
+    if (IS_MOBILE) {
       e.preventDefault();
       e.stopPropagation();
 
-      tooltip.innerHTML = renderTooltipHTML();
-      tooltip.style.display = "block";
-      tooltip.style.left = e.pageX + "px";
-      tooltip.style.top = e.pageY + "px";
-    });
-  }
-}
-}); // ❗ ĐÓNG nodes.forEach
+      // tap lần 2 → load 3 đời
+      if (activeTooltipPersonId === p.id) {
+        activeTooltipPersonId = null;
+        if (tooltip) tooltip.style.display = "none";
 
-} //
+        showTree();
+        showInfo();
+        showPersonInfo(p);
+        render3GenTree(p);
+        return;
+      }
+
+      // tap lần 1 → tooltip
+      activeTooltipPersonId = p.id;
+      if (tooltip) {
+        tooltip.innerHTML = renderTooltipHTML();
+        tooltip.style.display = "block";
+        tooltip.style.left = e.pageX + "px";
+        tooltip.style.top = e.pageY + "px";
+      }
+      return;
+    }
+
+    // ===== PC =====
+    showTree();
+    showInfo();
+    showPersonInfo(p);
+    render3GenTree(p);
+  });
+});
+
 
 
 // =====================================================
@@ -985,9 +984,10 @@ function openImageViewer(src) {
   viewer.classList.add("show");
 }
 
+
 // ===== MOBILE: TAP OUTSIDE TO CLOSE TOOLTIP =====
 document.addEventListener("click", () => {
   const tooltip = document.getElementById("tooltip");
   if (tooltip) tooltip.style.display = "none";
+  activeTooltipPersonId = null;
 });
-
