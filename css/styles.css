@@ -59,7 +59,15 @@ html, body {
 }
 
 .title-main { font-size: 22px; font-weight: bold; color: #fff; }
-.title-sub { font-size: 26px; font-family: "Brush Script MT", cursive; color: #ffeb3b; font-weight: bold; }
+.title-sub { font-size: 23px; font-family: "VNI-Thufap2", cursive; color: #ffeb3b; font-weight: bold;letter-spacing: 3px; }
+.title-cn {
+  display: inline-block;
+  font-size: 27px;        /* giữ nguyên nếu đang ổn */
+  color: #ffeb3b;
+  line-height: 1;         /* 🔑 khóa chiều cao dòng */
+  margin-top: -4px;       /* 🔑 xích lên nhẹ */
+  letter-spacing: 2px;    /* cho chữ Hán thoáng, đẹp */
+}
 
 .header-right {
   display: flex;
@@ -198,7 +206,7 @@ html, body {
   z-index: 1;
 
   width: 100%;
-  height: 600px;
+  height: 500px;
 
   overflow: auto;              /* 🔑 QUAN TRỌNG */
   background: transparent;
@@ -285,7 +293,7 @@ html, body {
 /* mobile */
 @media (max-width: 768px) {
   #tree-wrapper {
-    background-size: 380px;
+    background-size: 420px;
   }
 }
 
@@ -460,9 +468,33 @@ font-size: 13.5px;
    FOOTER
 ===================================================== */
 footer { background: #222; color: #fff; padding: 10px 13px; position: relative;font-size: 14px;color: #ffeb3b; padding: 2px 6px; }
-.footer-grid { display: flex; justify-content: space-between; }
 #admin-lock { position: absolute; right: 10px; top: 10px; cursor: pointer; }
 
+
+
+footer {
+  background: #222;
+  color: #ffeb3b;
+  padding: 12px 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 14px;      /* 🔑 nhìn thấy rõ */
+}
+
+.footer-grid {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+
+.footer-grid > div {
+  white-space: nowrap;       /* 🔑 không bẻ chữ */
+  overflow: hidden;
+  text-overflow: ellipsis;   /* … nếu quá dài */
+}
 
 /* =====================================================
    RESPONSIVE
@@ -473,7 +505,7 @@ footer { background: #222; color: #fff; padding: 10px 13px; position: relative;f
 @media (max-width: 700px) {
   .info-grid { grid-template-columns: 1fr; gap: 4px; }
 
-  #genealogy-svg rect { width: 160px !important; height: 50px !important; }
+  #genealogy-svg rect { width: 160px !important; height: 55px !important; }
   #genealogy-svg image { width: 36px !important; height: 36px !important; }
   #genealogy-svg text { font-size: 11px !important; }
 
@@ -548,6 +580,41 @@ footer { background: #222; color: #fff; padding: 10px 13px; position: relative;f
 
   /* cây gia phả thấp hơn để dễ cuộn */
   #tree-scroll {
-    height: 300px;
+    height: 600px;
+  }
+}
+
+@media (max-width: 520px) {
+  .filters {
+    flex-wrap: nowrap;      /* 🔑 không xuống dòng */
+    overflow-x: auto;       /* cho kéo ngang */
+    white-space: nowrap;
+  }
+
+  .filters select,
+  .filters button {
+    flex-shrink: 0;
+    font-size: 12px;
+    padding: 3px 6px;
+  }
+}
+
+@media (max-width: 520px) {
+  .filters {
+    scrollbar-width: none;       /* Firefox */
+  }
+  .filters::-webkit-scrollbar {
+    display: none;               /* Chrome */
+  }
+}
+
+@media (max-width: 768px) {
+  #tree-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  #genealogy-svg {
+    min-width: 900px;
   }
 }
