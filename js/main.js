@@ -158,7 +158,10 @@ function render3GenTree(centerPerson) {
 
   // ===== NODE THEO THỨ TỰ TRÊN → DƯỚI =====
   const nodes = [];
-  if (father) nodes.push({ ...father, _level: 0 });
+  if (father && father.id) {
+  nodes.push({ ...father, _level: 0 });
+}
+
   nodes.push({ ...centerPerson, _level: 1 });
   children.forEach(c => nodes.push({ ...c, _level: 2 }));
 
@@ -180,7 +183,7 @@ function render3GenTree(centerPerson) {
 // ===== PASS 1: VẼ NODE CON =====
 Object.entries(levelGroups).forEach(([level, list]) => {
   if (level != 2) return;
-
+  if (!list || list.length === 0) return;
   if (IS_MOBILE) {
     let startY = 40;
     list.forEach((n, i) => {
@@ -213,6 +216,18 @@ list.forEach((n, i) => {
     window.__treeCenterX = firstX + (lastX - firstX) / 2 - NODE_W / 2;
   }
 });
+
+
+if (IS_MOBILE && window.__treeCenterY == null) {
+  window.__treeCenterY = 40;
+}
+
+if (!IS_MOBILE && window.__treeCenterX == null) {
+  window.__treeCenterX = 40;
+}
+
+
+// ===== PASS 2: VẼ NODE CHA =====
 
 
 Object.entries(levelGroups).forEach(([level, list]) => {
@@ -267,7 +282,11 @@ if (IS_MOBILE) {
 
   // ===== DÂY NỐI =====
   nodes.forEach(n => {
-    if (n.fatherId && pos[n.fatherId] && pos[n.id]) {
+  if (!n || !n.id) return;
+
+  if (n.fatherId && pos[n.fatherId] && pos[n.id]) {
+
+
       const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
 if (IS_MOBILE) {
   line.setAttribute("x1", pos[n.fatherId].x + NODE_W);
@@ -297,7 +316,13 @@ if (IS_MOBILE) {
 
   nodes.forEach(p => {
     const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    g.setAttribute("transform", `translate(${pos[p.id].x},${pos[p.id].y})`);
+    if (!pos[p.id]) return;
+
+g.setAttribute(
+  "transform",
+  `translate(${pos[p.id].x},${pos[p.id].y})`
+);
+
     g.style.cursor = "pointer";
 
     // rect nền
@@ -345,11 +370,14 @@ if (IS_MOBILE) {
 
     // click load tiếp 3 đời
     g.addEventListener("click", () => {
-      showTree();
-      showInfo();
-      showPersonInfo(p);
-      render3GenTree(p);
-    });
+  if (!p || !p.id) return;
+
+  showTree();
+  showInfo();
+  showPersonInfo(p);
+  render3GenTree(p);
+});
+
 
     // hover tooltip
 g.addEventListener("mouseenter", (e) => {
