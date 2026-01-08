@@ -234,30 +234,49 @@ function fillForm(p){
 
   /* ================== TREE ================== */
   function renderTree(){
-    const box=id("tree");
-    box.innerHTML="";
-    const chiList = [...new Set(people.map(p=>p.chinhap))];
-    chiList.forEach(chi=>{
-      const chiDiv = document.createElement("div");
-      chiDiv.textContent = chi;
-      chiDiv.style.fontWeight="bold";
-      chiDiv.onclick = ()=> renderDoiTree(chi, chiDiv);
-      box.appendChild(chiDiv);
-    });
-  }
+  const box = id("tree");
+  box.innerHTML = "";
 
-  function renderDoiTree(chi,parentDiv){
-    const doiList = [...new Set(people.filter(p=>p.chinhap===chi).map(p=>p.doinhap))].sort((a,b)=>a-b);
-    parentDiv.querySelectorAll(".doi-list").forEach(e=>e.remove());
-    doiList.forEach(doi=>{
-      const doiDiv = document.createElement("div");
-      doiDiv.textContent = "Đời "+doi;
-      doiDiv.className="doi-list";
-      doiDiv.style.paddingLeft="20px";
-      doiDiv.onclick = (e)=>{ e.stopPropagation(); renderTenTree(chi, doi, doiDiv); };
-      parentDiv.appendChild(doiDiv);
-    });
-  }
+  const chiList = [...new Set(people.map(p => p.chinhap))];
+
+  chiList.forEach(chi => {
+    const chiDiv = document.createElement("div");
+    chiDiv.textContent = chi;
+    chiDiv.className = "chi-item";
+    chiDiv.dataset.open = "0";
+
+    chiDiv.onclick = (e) => {
+      e.stopPropagation();
+      toggleChiTree(chi, chiDiv);
+    };
+
+    box.appendChild(chiDiv); // ✅ SỬA Ở ĐÂY
+  });
+}
+
+
+  function renderDoiTree(chi, parentDiv){
+  const doiList = [...new Set(
+    people.filter(p=>p.chinhap===chi).map(p=>p.doinhap)
+  )].sort((a,b)=>a-b);
+
+  parentDiv.querySelectorAll(".doi-list").forEach(e=>e.remove());
+
+  doiList.forEach(doi=>{
+    const doiDiv = document.createElement("div");
+    doiDiv.textContent = "Đời " + doi;
+    doiDiv.className = "doi-list";
+    doiDiv.dataset.open = "0"; // đóng mặc định
+
+    doiDiv.onclick = (e)=>{
+      e.stopPropagation();
+      toggleTenTree(chi, doi, doiDiv);
+    };
+
+    parentDiv.appendChild(doiDiv);
+  });
+}
+
 
   function renderTenTree(chi, doi, parentDiv){
     parentDiv.querySelectorAll(".ten-list").forEach(e=>e.remove());
@@ -271,6 +290,70 @@ function fillForm(p){
       parentDiv.appendChild(tenDiv);
     });
   }
+
+function toggleTenTree(chi, doi, doiDiv){
+  const isOpen = doiDiv.dataset.open === "1";
+
+  // Nếu đang mở → thu lại
+  if(isOpen){
+    doiDiv.querySelectorAll(".ten-list").forEach(e=>e.remove());
+    doiDiv.dataset.open = "0";
+    doiDiv.classList.remove("open");
+    return;
+  }
+
+  // Đóng các đời khác (gọn gàng)
+  doiDiv.parentElement.querySelectorAll(".doi-list").forEach(d=>{
+    d.dataset.open = "0";
+    d.classList.remove("open");
+    d.querySelectorAll(".ten-list").forEach(e=>e.remove());
+  });
+
+  // Bung danh sách tên
+  const tenList = people.filter(
+    p=>p.chinhap===chi && p.doinhap===doi
+  );
+
+  tenList.forEach(p=>{
+    const tenDiv = document.createElement("div");
+    tenDiv.textContent = p.hovaten;
+    tenDiv.className = "ten-list";
+    tenDiv.onclick = (e)=>{
+      e.stopPropagation();
+      fillForm(p);
+    };
+    doiDiv.appendChild(tenDiv);
+  });
+
+  doiDiv.dataset.open = "1";
+  doiDiv.classList.add("open");
+}
+
+
+function toggleChiTree(chi, chiDiv){
+  const isOpen = chiDiv.dataset.open === "1";
+
+  // Nếu đang mở → thu lại
+  if(isOpen){
+    chiDiv.querySelectorAll(".doi-list").forEach(e=>e.remove());
+    chiDiv.dataset.open = "0";
+    chiDiv.classList.remove("open");
+    return;
+  }
+
+  // Đóng các chi khác
+  chiDiv.parentElement.querySelectorAll(".chi-item").forEach(c=>{
+    c.dataset.open = "0";
+    c.classList.remove("open");
+    c.querySelectorAll(".doi-list").forEach(e=>e.remove());
+  });
+
+  // Bung đời
+  renderDoiTree(chi, chiDiv);
+
+  chiDiv.dataset.open = "1";
+  chiDiv.classList.add("open");
+}
 
   /* ================== AVATAR ================== */
   function bindAvatarPreview(){
@@ -357,40 +440,61 @@ function fillForm(p){
   }
 
   /* ================== VỢ / CON ================== */
-  window.addVoForm = function(v={}){
-    const div = document.createElement("div");
-    div.className="vo-form";
-    div.innerHTML=`
-      <b>Vợ</b> <button type="button" class="del-vo">Xóa vợ</button><br>
-      <label>Họ và tên</label><input class="tenvo" value="${v.tenvo||""}">
-      <label>Thường gọi</label><input class="goivo" value="${v.goivo||""}">
-      <label>Nguyên quán</label><input class="quevo" value="${v.quevo||""}">
-      <label>Cha</label><input class="chavo" value="${v.chavo||""}">
-      <label>Mẹ</label><input class="mevo" value="${v.mevo||""}">
-      <label>Sinh</label><input class="sinhvo" value="${v.sinhvo||""}">
-      <label>Mất</label><input class="matvo" value="${v.matvo||""}">
-      <label>Mộ táng</label><input class="movo" value="${v.movo||""}">
-      <label>Maps</label><input class="mapvo" value="${v.mapvo||""}">
-      <label>Ghi chú</label><textarea class="ghichuvo">${v.ghichuvo||""}</textarea>
-      <div class="con-box"></div>
-      <button type="button" class="add-con">Thêm con</button>
-      <hr>
-    `;
-    div.querySelector(".del-vo").onclick=()=>div.remove();
-    div.querySelector(".add-con").onclick=()=>addConForm(div);
-    id("vo-container").appendChild(div);
-    (v.con||[]).forEach(c=>addConForm(div,c));
-  };
+  window.addVoForm = function(v = {}) {
+  const div = document.createElement("div");
+  div.className = "vo-form";
 
-  function addConForm(voDiv,ten=""){
-    const d=document.createElement("div");
-    d.innerHTML=`
+  div.innerHTML = `
+    <div class="buttons">
+      <b>Vợ</b>
+      <button type="button" class="del-vo btn-xoa-vo">Xóa vợ</button>
+    </div>
+
+    <div class="row"><label>Họ tên</label><input class="tenvo" value="${v.tenvo||""}"></div>
+    <div class="row"><label>Thường gọi</label><input class="goivo" value="${v.goivo||""}"></div>
+    <div class="row"><label>Nguyên quán</label><input class="quevo" value="${v.quevo||""}"></div>
+    <div class="row"><label>Cha</label><input class="chavo" value="${v.chavo||""}"></div>
+    <div class="row"><label>Mẹ</label><input class="mevo" value="${v.mevo||""}"></div>
+    <div class="row"><label>Sinh</label><input class="sinhvo" value="${v.sinhvo||""}"></div>
+    <div class="row"><label>Mất</label><input class="matvo" value="${v.matvo||""}"></div>
+    <div class="row"><label>Mộ táng</label><input class="movo" value="${v.movo||""}"></div>
+    <div class="row"><label>Maps</label><input class="mapvo" value="${v.mapvo||""}"></div>
+
+    <div class="row full">
+      <label>Ghi chú</label>
+      <textarea class="ghichuvo">${v.ghichuvo||""}</textarea>
+    </div>
+
+    <div class="con-box"></div>
+
+<div class="buttons">
+  <button type="button" class="btn-them-con">+ Thêm con</button>
+</div>
+
+    <hr>
+  `;
+
+  div.querySelector(".del-vo").onclick = () => div.remove();
+  div.querySelector(".btn-them-con").onclick = () => addConForm(div);
+
+  id("vo-container").appendChild(div);
+  (v.con || []).forEach(c => addConForm(div, c));
+};
+
+
+  function addConForm(voDiv, ten = "") {
+  const d = document.createElement("div");
+  d.className = "row";
+  d.innerHTML = `
+    <label>Con</label>
+    <div style="display:flex; gap:6px;">
       <input class="con" value="${ten}" placeholder="Tên con">
-      <button type="button">Xóa con</button>
-    `;
-    d.querySelector("button").onclick=()=>d.remove();
-    voDiv.querySelector(".con-box").appendChild(d);
-  }
+      <button type="button" class="btn-xoa-con">X</button>
+    </div>
+  `;
+  d.querySelector("button").onclick = () => d.remove();
+  voDiv.querySelector(".con-box").appendChild(d);
+}
 
   /* ================== UTILS ================== */
   const id=i=>document.getElementById(i);
