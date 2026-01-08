@@ -325,8 +325,6 @@ textarea:focus {
 
 /* =========================================================
    [MODULE TAB 1] : NHẬP LIỆU CÁ NHÂN – 2 CỘT
-   Trái: form nhập
-   Phải: danh sách / cây gia phả
 ========================================================= */
 
 #tab1 .wrap {
@@ -341,27 +339,43 @@ textarea:focus {
   background: transparent;
 }
 
-/* group trong tab 1 */
+/* mỗi group */
 #tab1 .left .group {
   margin-bottom: 16px;
 }
 
-/* field dạng lưới */
-#tab1 .left .group {
+/* ================= FORM GRID (THEO FIELD) ================= */
+/* CHỈ group nào cần chia cột mới dùng class này */
+#tab1 .group.form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
+  gap: 14px;
 }
 
-/* field full width (textarea, vợ con…) */
-#tab1 .left .group textarea,
-#tab1 .left .group h4,
-#tab1 .left .group img,
+/* ===== FIELD: label trên – input dưới (1 khối duy nhất) ===== */
+#tab1 .field,
+#tab1 .vo-form .field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* input full width */
+#tab1 .field input,
+#tab1 .field select,
+#tab1 .field textarea,
+#tab1 .vo-form input,
+#tab1 .vo-form textarea {
+  width: 100%;
+}
+
+/* textarea, block lớn full hàng */
+#tab1 .field.full,
 #tab1 #vo-container {
   grid-column: 1 / -1;
 }
 
-/* buttons */
+/* ================= BUTTONS ================= */
 #tab1 .buttons {
   grid-column: 1 / -1;
   display: flex;
@@ -376,7 +390,6 @@ textarea:focus {
   margin-top: 6px;
 }
 
-
 /* ================= RIGHT ================= */
 #tab1 .right {
   background: var(--bg-panel);
@@ -390,66 +403,113 @@ textarea:focus {
   margin-top: 0;
 }
 
-/* cây gia phả / danh sách */
 #tree {
   margin-top: 12px;
   font-size: 14px;
 }
 
 /* =================================================
-   TAB 1 – NÚT VỢ / CON (GIẢM 10%)
+   TAB 1 – VỢ / CON (NHẬP NHANH)
 ================================================= */
 
-/* CHUNG – giảm size 10% */
+/* NÚT – nhỏ gọn */
 #tab1 .btn-xoa-vo,
 #tab1 .btn-xoa-con,
 #tab1 #btnThemVo,
 #tab1 .btn-them-con {
-  padding: 4px 8px;      /* trước ~7px 14px */
-  font-size: 12.5px;      /* trước ~16px */
+  padding: 4px 8px;
+  font-size: 12.5px;
   border-radius: 6px;
 }
 
-/* ================= XÓA ================= */
-
-/* xóa vợ – đỏ đậm */
+/* xóa vợ */
 #tab1 .btn-xoa-vo {
   background: #b91c1c;
   border-color: #b91c1c;
   color: #fff;
 }
-
 #tab1 .btn-xoa-vo:hover {
   background: #991b1b;
 }
 
-/* xóa con – đỏ nhạt hơn */
+/* xóa con */
 #tab1 .btn-xoa-con {
   background: #ef4444;
   border-color: #ef4444;
   color: #fff;
 }
-
 #tab1 .btn-xoa-con:hover {
   background: #dc2626;
 }
 
-/* ================= THÊM ================= */
-
-/* thêm vợ / thêm con – ghi đậm (theo theme chung) */
+/* thêm */
 #tab1 #btnThemVo,
 #tab1 .btn-them-con {
   background: #6b7280;
   border-color: #6b7280;
   color: #fff;
-
 }
-
 #tab1 #btnThemVo:hover,
 #tab1 .btn-them-con:hover {
   background: #4b5563;
 }
 
+/* ================= KHUNG VỢ ================= */
+.vo-form {
+  background: #f9fafb;
+  padding: 14px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  border: 1px solid #e5e7eb;
+}
+
+.vo-form > b {
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+/* nút thêm con đặt TRƯỚC */
+.vo-form .btn-them-con {
+  margin-bottom: 6px;
+}
+
+/* mỗi dòng con: [input] [xóa] */
+.vo-form .con-box > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.vo-form .con-box input.con {
+  flex: 1;
+  padding: 8px 10px;
+  font-size: 14px;
+}
+
+/* label + input nằm 1 dòng */
+#tab1 .row {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+#tab1 .row label {
+  margin: 0;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* textarea full dòng */
+#tab1 .row.full {
+  grid-template-columns: 1fr;
+}
+
+#tab1 .row.full label {
+  margin-bottom: 4px;
+}
 
 /* ================= MOBILE ================= */
 @media (max-width: 900px) {
@@ -460,6 +520,64 @@ textarea:focus {
   #tab1 .right {
     margin-top: 20px;
   }
+}
+
+
+/* ===== TREE UX ===== */
+
+/* ĐỜI */
+#tree .doi-list {
+  cursor: pointer;
+  padding: 4px 6px;
+  margin: 2px 0;
+  border-radius: 6px;
+  background: #eef2ff;           /* xanh nhạt */
+  color: #1e3a8a;
+  font-weight: 600;
+}
+
+#tree .doi-list:hover {
+  background: #c7d2fe;           /* hover đậm hơn */
+}
+
+/* ĐỜI đang mở */
+#tree .doi-list.open {
+  background: #a5b4fc;
+}
+
+/* TÊN */
+#tree .ten-list {
+  cursor: pointer;
+  padding: 3px 6px;
+  margin: 1px 0 1px 20px;
+  border-radius: 6px;
+  background: #f0fdf4;           /* xanh lá nhạt */
+  color: #065f46;
+}
+
+#tree .ten-list:hover {
+  background: #bbf7d0;
+}
+
+/* ===== CHI ===== */
+#tree .chi-item {
+  cursor: pointer;
+  padding: 6px 10px;
+  margin: 4px 0;
+  border-radius: 8px;
+  background: #fff7ed;       /* cam nhạt */
+  color: #9a3412;
+  font-weight: 700;
+  user-select: none;
+}
+
+#tree .chi-item:hover {
+  background: #fed7aa;
+}
+
+/* Chi đang mở */
+#tree .chi-item.open {
+  background: #fdba74;
 }
 
 
