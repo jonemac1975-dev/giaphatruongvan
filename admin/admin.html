@@ -67,20 +67,23 @@
     <div class="left">
       <h3>1. Nhập thông tin cá nhân</h3>
 
-      <!-- Nhóm Chi – Đời – Tên + Button Tìm/Thêm/Xóa/Lưu -->
-      <div class="group">
+      <!-- ================= CHI – ĐỜI – TÊN ================= -->
+      <div class="group form-grid">
         <div class="field">
           <label>Chi</label>
           <select id="id-chinhap"></select>
         </div>
+
         <div class="field">
           <label>Đời</label>
           <select id="id-doinhap"></select>
         </div>
+
         <div class="field">
           <label>Tên</label>
           <select id="id-tennhap"></select>
         </div>
+
         <div class="buttons">
           <button id="btnTim">Tìm</button>
           <button id="btnThem">Thêm</button>
@@ -89,66 +92,61 @@
         </div>
       </div>
 
-      <!-- Nhóm Ảnh -->
-      <div class="group">
+      <!-- ================= ẢNH ================= -->
+      <div class="group form-grid">
         <div class="field">
           <label>Ảnh</label>
           <input type="file" id="id-anh">
         </div>
+
         <div class="buttons">
           <button id="btnXoaAnh">Xóa ảnh</button>
         </div>
+
         <img id="previewAnh">
       </div>
 
-      <!-- Nhóm Clip -->
-      <div class="group">
-        <div class="field">
-          <label>Clip</label>
-          <input id="id-clip">
-        </div>
-        <div class="buttons">
-          <button id="btnXoaClip">Xóa clip</button>
-        </div>
-      </div>
-
-      <!-- Nhóm thông tin chi tiết -->
-      <div class="group">
+      <!-- ================= THÔNG TIN CÁ NHÂN ================= -->
+      <div class="group form-grid">
         <div class="field"><label>Họ và tên</label><input id="id-hovaten"></div>
         <div class="field"><label>Thường gọi</label><input id="id-thuonggoi"></div>
+
         <div class="field"><label>Chi</label><select id="id-chinhap-form"></select></div>
-        <div class="field"><label>Đời</label><input id="id-doinhap-form" type="number" min="0" step="1"></div>
+        <div class="field"><label>Đời</label><input id="id-doinhap-form" type="number" min="0"></div>
+
         <div class="field"><label>Cha</label><select id="id-cha"></select></div>
         <div class="field"><label>Mẹ</label><select id="id-me"></select></div>
+
         <div class="field"><label>Nghề</label><input id="id-nghiep"></div>
         <div class="field"><label>Sinh</label><input id="id-sinh"></div>
         <div class="field"><label>Mất</label><input id="id-mat"></div>
+
         <div class="field"><label>Mộ táng</label><input id="id-motang"></div>
         <div class="field"><label>Maps</label><input id="id-map"></div>
-        <div class="field"><label>Ghi chú</label><textarea id="id-ghichu"></textarea></div>
+
+        <div class="field full">
+          <label>Ghi chú</label>
+          <textarea id="id-ghichu"></textarea>
+        </div>
+
         <div class="field"><label>Sinh hạ</label><input id="id-sinhha"></div>
       </div>
 
-      <!-- Nhóm Vợ / Con -->
+      <!-- ================= VỢ / CON ================= -->
       <div class="group">
-        <h4>Vợ / Chồng - Con</h4>
+        <h4>Vợ / Chồng – Con</h4>
 
-        <!-- Container vợ -->
+        <!-- container vợ (JS đổ vào) -->
         <div id="vo-container"></div>
 
-        <!-- Container con -->
-        <div id="con-container"></div>
-
-        <!-- Nút thêm vợ / con -->
         <div class="buttons">
-          <button id="btnThemVo">Thêm vợ</button>
-          
+          <button id="btnThemVo">+ Thêm vợ</button>
         </div>
       </div>
 
     </div>
 
-    <!-- RIGHT: DANH SÁCH / CÂY GIA PHẢ -->
+    <!-- RIGHT: CÂY GIA PHẢ -->
     <div class="right">
       <h3>Danh sách gia phả</h3>
       <div id="tree"></div>
