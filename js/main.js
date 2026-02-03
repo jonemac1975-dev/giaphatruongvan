@@ -781,29 +781,47 @@ async function loadNoticeBox(path) {
   if (!box) return;
 
   const raw = await firebaseGet(path);
-  if (!raw) return;
+  
+  if (!raw) {
+    box.style.display = "none";
+    return;
+  }
 
   const items = Object.entries(raw)
     .map(([id, v]) => ({ id, ...v }))
-    .filter(v => v.status === 1)
+    // FIX: cho phép status = 1 | "1" | undefined (notice cũ)
+    .filter(v => v.status == 1 || v.status === undefined)
     .sort(sortByTimeDesc);
+
+  if (!items.length) {
+    box.style.display = "none";
+    return;
+  }
+
+  box.style.display = "block";
 
   box.innerHTML = `
     <h4>Thông tin</h4>
     <div class="list">
       ${items.map(n => `
-        <div class="list-item">
-          <a href="notice.html?id=${n.id}">
-            ${n.title || ""}
-          </a>
-          ${isNew(n.updatedAt || n.createdAt)
-            ? `<span class="tag-new">NEW</span>`
-            : ""}
-        </div>
+        <a href="notice.html?id=${n.id}" class="notice-item">
+          ${n.thumb ? `
+            <img src="${n.thumb}" class="thumb">
+          ` : ``}
+          <div class="info">
+            <div class="title">
+              ${n.title || ""}
+              ${isNew(n.updatedAt || n.createdAt)
+                ? `<span class="tag-new">NEW</span>`
+                : ``}
+            </div>
+          </div>
+        </a>
       `).join("")}
     </div>
   `;
 }
+
 
 // =====================================================
 // 2. ẢNH SỰ KIỆN
