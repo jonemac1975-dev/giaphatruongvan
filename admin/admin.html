@@ -217,21 +217,39 @@
     <label for="notice-summary">Tóm tắt (hiển thị trên index)</label>
     <input id="notice-summary" type="text" placeholder="Nhập mô tả ngắn..." />
 
-    <label for="notice-content">Nội dung chi tiết</label>
-<div style="margin:6px 0">
-  <input type="file" id="notice-image" accept="image/*" hidden>
-  <button type="button" id="btn-insert-image">📷 Chèn ảnh</button>
-</div>
+    <label>Nội dung chi tiết</label>
 
-    <textarea id="notice-content" rows="6" placeholder="Nhập nội dung thông báo..."></textarea>
+    <!-- ===== TOOLBAR CHÈN NỘI DUNG ===== -->
+    <div class="editor-toolbar" style="margin:6px 0; display:flex; gap:6px; flex-wrap:wrap">
+      <input type="file" id="notice-image" accept="image/*" hidden>
 
-    <label for="notice-link">Link đính kèm (nếu có)</label>
+      <button type="button" id="btn-insert-image">📷 Ảnh</button>
+      <button type="button" id="btn-insert-pdf">📄 PDF / Flip</button>
+      <button type="button" id="btn-insert-video">🎬 MP4 / YouTube</button>
+      <button type="button" id="btn-insert-audio">🎵 MP3</button>
+    </div>
+
+    <!-- ===== Ô NHẬP HTML (DÁN WORD) ===== -->
+    <div
+      id="notice-content"
+      contenteditable="true"
+      class="editor"
+      style="
+        min-height:160px;
+        padding:10px;
+        border:1px solid #ccc;
+        background:#fff;
+        overflow:auto
+      "
+      placeholder="Dán nội dung từ Word vào đây..."
+    ></div>
+
+   <label for="notice-link">Link đính kèm (nếu có)</label>
     <input id="notice-link" type="text" placeholder="https://..." />
 
     <div class="actions">
       <button id="notice-add">Thêm</button>
       <button id="notice-save" disabled>Lưu</button>
-
       <button id="notice-clear" type="button">Xoá form</button>
     </div>
 
@@ -245,7 +263,7 @@
         <th>Tiêu đề</th>
         <th style="width:120px">Ngày</th>
         <th style="width:100px">Preview</th>
-        <th style="width:80px">Xoá</th>
+        <th style="width:100px">Thao tác</th>
       </tr>
     </thead>
     <tbody id="notice-list">
@@ -254,6 +272,7 @@
   </table>
 
 </div>
+
 
 
 <!-- ================================================= -->
