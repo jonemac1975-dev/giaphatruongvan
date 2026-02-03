@@ -12,186 +12,273 @@ window.loadTab3 = async function () {
   if (inited) return;
   inited = true;
 
-  // ===== DOM =====
-  const noticeTitle   = document.getElementById("notice-title");
-  const noticeSummary = document.getElementById("notice-summary");
-  const noticeContent = document.getElementById("notice-content");
-  const noticeLink    = document.getElementById("notice-link");
+  /* ======================
+     DOM
+  ====================== */
+  const $ = id => document.getElementById(id);
 
-  const noticeAdd   = document.getElementById("notice-add");
-  const noticeSave  = document.getElementById("notice-save");
-  const noticeClear = document.getElementById("notice-clear");
+  const noticeTitle   = $("notice-title");
+  const noticeSummary = $("notice-summary");
+  const noticeContent = $("notice-content");
+  const noticeLink    = $("notice-link");
 
-  const noticeList  = document.getElementById("notice-list");
+  const noticeAdd   = $("notice-add");
+  const noticeSave  = $("notice-save");
+  const noticeClear = $("notice-clear");
+  const noticeList  = $("notice-list");
 
-  // ===== CHÈN ẢNH =====
-  const btnInsertImage = document.getElementById("btn-insert-image");
-  const imageInput    = document.getElementById("notice-image");
+  const btnInsertImage = $("btn-insert-image");
+  const btnInsertPDF   = $("btn-insert-pdf");
+  const btnInsertVideo = $("btn-insert-video");
+  const btnInsertAudio = $("btn-insert-audio");
+  const imageInput     = $("notice-image");
 
-  if (
-    !noticeTitle || !noticeSummary || !noticeContent ||
-    !noticeLink || !noticeAdd || !noticeSave ||
-    !noticeClear || !noticeList
-  ) {
-    console.error("Tab3 elements missing");
+  if (!noticeTitle || !noticeContent || !noticeAdd || !noticeList) {
+    console.error("Tab3 DOM missing");
     return;
   }
 
-  /* ==============================
-     CHÈN ẢNH VÀO NỘI DUNG
-  ============================== */
-  if (btnInsertImage && imageInput) {
-    btnInsertImage.onclick = () => imageInput.click();
+  /* ======================
+     EDITOR UTILS
+  ====================== */
+  function insertHTML(html) {
+    noticeContent.focus();
 
-    imageInput.onchange = () => {
-      const file = imageInput.files[0];
-      if (!file) return;
-
-      // quy ước: ảnh đã up sẵn trong /store/
-      const imgPath = `./store/${file.name}`;
-
-      insertAtCursor(
-        noticeContent,
-        `\n<img src="${imgPath}" class="center">\n`
-      );
-
-      imageInput.value = "";
-    };
+    if (document.queryCommandSupported("insertHTML")) {
+      document.execCommand("insertHTML", false, html);
+    } else {
+      noticeContent.innerHTML += html;
+    }
   }
 
-  function insertAtCursor(textarea, text) {
-    const start = textarea.selectionStart;
-    const end   = textarea.selectionEnd;
-    const value = textarea.value;
-
-    textarea.value =
-      value.substring(0, start) +
-      text +
-      value.substring(end);
-
-    textarea.selectionStart =
-    textarea.selectionEnd = start + text.length;
-
-    textarea.focus();
+  function cleanWordHTML(html) {
+    return html
+      .replace(/style="[^"]*"/gi, "")
+      .replace(/class="[^"]*"/gi, "")
+      .replace(/<o:p>\s*<\/o:p>/g, "")
+      .replace(/<\/?span[^>]*>/gi, "");
   }
 
-  /* ==============================
+  noticeContent.addEventListener("paste", e => {
+    e.preventDefault();
+    const text = (e.clipboardData || window.clipboardData).getData("text/html")
+      || (e.clipboardData || window.clipboardData).getData("text/plain");
+    insertHTML(cleanWordHTML(text));
+  });
+
+  /* ======================
+     INSERT IMAGE
+  ====================== */
+  btnInsertImage?.addEventListener("click", () => imageInput.click());
+
+imageInput?.addEventListener("change", () => {
+  const file = imageInput.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    insertHTML(`
+      <div class="media image" style="margin:10px 0;text-align:center">
+        <img src="${e.target.result}" style="max-width:100%;height:auto" />
+      </div>
+    `);
+  };
+  reader.readAsDataURL(file);
+
+  imageInput.value = "";
+});
+
+
+  /* ======================
+     INSERT PDF / FLIP
+  ====================== */
+  btnInsertPDF?.addEventListener("click", () => {
+  let url = prompt("Dán link PDF (Google Drive / FlipHTML5):");
+  if (!url) return;
+
+  // Google Drive → convert sang preview
+  if (url.includes("drive.google.com")) {
+    const id = url.match(/\/d\/([^/]+)/)?.[1];
+    if (!id) return alert("Link Drive không hợp lệ");
+    url = `https://drive.google.com/file/d/${id}/preview`;
+  }
+
+  insertHTML(`
+    <div class="media pdf" style="margin:12px 0">
+      <iframe
+        src="${url}"
+        style="width:100%;height:600px;border:0"
+        loading="lazy">
+      </iframe>
+    </div>
+  `);
+});
+
+  /* ======================
+     INSERT VIDEO
+  ====================== */
+  function getYoutubeId(url) {
+    const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([^&]+)/);
+    return m ? m[1] : null;
+  }
+
+ btnInsertVideo.onclick = () => {
+  const url = prompt("Dán link MP4 Google Drive hoặc YouTube:");
+  if (!url) return;
+
+  // YouTube
+  let ytId = null;
+  const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([^&]+)/);
+  if (ytMatch) ytId = ytMatch[1];
+
+  if (ytId) {
+    insertHTML(`
+      <div class="media video" style="margin:16px 0">
+        <iframe
+          src="https://www.youtube.com/embed/${ytId}"
+          style="width:100%;aspect-ratio:16/9"
+          allowfullscreen>
+        </iframe>
+      </div>
+    `);
+    return;
+  }
+
+  // Drive MP4
+  const m = url.match(/\/d\/([^/]+)/) || url.match(/id=([^&]+)/);
+  if (!m) return alert("Link không hợp lệ");
+
+  insertHTML(`
+    <div class="media video" style="margin:16px 0;text-align:center">
+      <iframe
+        src="https://drive.google.com/file/d/${m[1]}/preview"
+        style="width:90%;max-width:900px;height:420px;border:none"
+        allow="autoplay">
+      </iframe>
+    </div>
+  `);
+};
+
+
+  
+  /* ======================
+   INSERT AUDIO
+====================== */
+btnInsertAudio.onclick = () => {
+  const url = prompt("Dán link MP3 Google Drive:");
+  if (!url) return;
+
+  const m = url.match(/\/d\/([^/]+)/) || url.match(/id=([^&]+)/);
+  if (!m) return alert("Link không hợp lệ");
+
+  insertHTML(`
+    <div class="media audio" style="margin:12px 0;text-align:center">
+      <iframe
+        src="https://drive.google.com/file/d/${m[1]}/preview"
+        style="width:360px;height:60px;border:none"
+        allow="autoplay">
+      </iframe>
+    </div>
+  `);
+};
+
+
+
+  /* ======================
      LOAD LIST
-  ============================== */
+  ====================== */
   async function loadNotices() {
     noticeList.innerHTML = "";
-    const notices = await getNotices();
-    if (!notices.length) return;
+    const data = await getNotices();
+    if (!data?.length) return;
 
-    notices
-      .sort((a, b) => b.createdAt - a.createdAt)
-      .forEach((it, i) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${i + 1}</td>
-          <td>${it.title || ""}</td>
-          <td>${it.createdAt ? new Date(it.createdAt).toLocaleDateString("vi-VN") : ""}</td>
-          <td>
-            <a href="/notice.html?id=${it.id}" target="_blank">Xem</a>
-          </td>
-          <td>
-            <button class="edit">Sửa</button>
-            <button class="del">Xóa</button>
-          </td>
-        `;
+    data.sort((a, b) => b.createdAt - a.createdAt);
 
-        // ===== SỬA =====
-        tr.querySelector(".edit").onclick = () => {
-          noticeTitle.value   = it.title || "";
-          noticeSummary.value = it.summary || "";
-          noticeContent.value = it.content || "";
-          noticeLink.value    = it.link || "";
+    data.forEach((it, i) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${i + 1}</td>
+        <td>${it.title || ""}</td>
+        <td>${it.createdAt ? new Date(it.createdAt).toLocaleDateString("vi-VN") : ""}</td>
+        <td><a href="/notice.html?id=${it.id}" target="_blank">Xem</a></td>
+        <td>
+          <button class="edit">Sửa</button>
+          <button class="del">Xóa</button>
+        </td>
+      `;
 
-          currentEditId = it.id;
-          noticeAdd.disabled  = true;
-          noticeSave.disabled = false;
-        };
+      tr.querySelector(".edit").onclick = () => editNotice(it);
+      tr.querySelector(".del").onclick  = () => removeNotice(it.id);
 
-        // ===== XÓA =====
-        tr.querySelector(".del").onclick = async () => {
-          if (!confirm("Xóa thông báo này?")) return;
-          await deleteNotice(it.id);
-          await loadNotices();
-        };
-
-        noticeList.appendChild(tr);
-      });
+      noticeList.appendChild(tr);
+    });
   }
 
-  /* ==============================
-     THÊM MỚI
-  ============================== */
+  /* ======================
+     CRUD
+  ====================== */
+  function editNotice(it) {
+    noticeTitle.value   = it.title || "";
+    noticeSummary.value = it.summary || "";
+    noticeContent.innerHTML = it.content || "";
+    noticeLink.value    = it.link || "";
+
+    currentEditId = it.id;
+    noticeAdd.disabled  = true;
+    noticeSave.disabled = false;
+  }
+
+  async function removeNotice(id) {
+    if (!confirm("Xóa thông báo này?")) return;
+    await deleteNotice(id);
+    loadNotices();
+  }
+
   noticeAdd.onclick = async () => {
-    if (currentEditId) return;
-
-    const title   = noticeTitle.value.trim();
-    const summary = noticeSummary.value.trim();
-    const content = noticeContent.value.trim();
-    const link    = noticeLink.value.trim();
-
-    if (!title) return alert("Nhập tiêu đề thông báo");
+    const title = noticeTitle.value.trim();
+    if (!title) return alert("Nhập tiêu đề");
 
     await addNotice({
       title,
-      summary,
-      content,
-      link,
+      summary: noticeSummary.value.trim(),
+      content: noticeContent.innerHTML,
+      link: noticeLink.value.trim(),
       status: 1,
       createdAt: Date.now()
     });
 
     clearForm();
-    await loadNotices();
+    loadNotices();
   };
 
-  /* ==============================
-     LƯU (UPDATE)
-  ============================== */
   noticeSave.onclick = async () => {
     if (!currentEditId) return;
 
-    const title   = noticeTitle.value.trim();
-    const summary = noticeSummary.value.trim();
-    const content = noticeContent.value.trim();
-    const link    = noticeLink.value.trim();
-
-    if (!title) return alert("Nhập tiêu đề thông báo");
-
     await updateNotice(currentEditId, {
-      title,
-      summary,
-      content,
-      link,
-      status: 1,
-      createdAt: Date.now()
+      title: noticeTitle.value.trim(),
+      summary: noticeSummary.value.trim(),
+      content: noticeContent.innerHTML,
+      link: noticeLink.value.trim(),
+      updatedAt: Date.now()
     });
 
     clearForm();
-    await loadNotices();
+    loadNotices();
   };
 
-  /* ==============================
-     CLEAR FORM
-  ============================== */
   function clearForm() {
-    noticeTitle.value   = "";
+    noticeTitle.value = "";
     noticeSummary.value = "";
-    noticeContent.value = "";
-    noticeLink.value    = "";
+    noticeContent.innerHTML = "";
+    noticeLink.value = "";
 
     currentEditId = null;
-    noticeAdd.disabled  = false;
+    noticeAdd.disabled = false;
     noticeSave.disabled = true;
   }
 
   noticeClear.onclick = clearForm;
 
-  // init
   noticeSave.disabled = true;
-  await loadNotices();
+  loadNotices();
 };
