@@ -801,7 +801,7 @@ async function loadNoticeBox(path) {
   box.style.display = "block";
 
   box.innerHTML = `
-    <h4>Thông tin</h4>
+    <h4>Thông tin - Dòng lịch sử </h4>
     <div class="list">
       ${items.map(n => `
         <a href="notice.html?id=${n.id}" class="notice-item">
@@ -836,7 +836,7 @@ async function loadImageBox(path) {
   const items = Object.values(raw).sort(sortByTimeDesc);
 
   box.innerHTML = `
-    <h4>Ảnh</h4>
+    <h4>Ảnh Tư liệu - Sự kiện</h4>
     <div class="list">
       ${items.map(i => `
         <a class="media-item img-item" href="#" data-img="${i.image}">
@@ -871,7 +871,7 @@ async function loadClipBox(path) {
 
   // render timeline với thumbnail
   box.innerHTML = `
-    <h4>Clip</h4>
+    <h4>Clip ngắn </h4>
     <div class="timeline">
       ${items.map(v => {
         const idMatch = v.link.match(/(?:v=|youtu\.be\/)([^&?/]+)/);
@@ -933,7 +933,7 @@ async function loadYoutubeBox(path) {
   const items = Object.values(raw).sort(sortByTimeDesc);
 
   box.innerHTML = `
-    <h4>Youtube</h4>
+    <h4>Phim tư liệu</h4>
     <div class="timeline">
       ${items.map(v => {
         const idMatch = v.link.match(/(?:v=|youtu\.be\/)([^&?/]+)/);
@@ -1005,4 +1005,5 @@ document.addEventListener("click", () => {
   const tooltip = document.getElementById("tooltip");
   if (tooltip) tooltip.style.display = "none";
   activeTooltipPersonId = null;
+
 });
