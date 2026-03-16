@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Thông báo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      padding: 0;
+    }
+    .wrap {
+      max-width: 800px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 6px;
+    }
+    h1 {
+      font-size: 22px;
+      color: #8b0000;
+    }
+    .date {
+      font-size: 13px;
+      color: #777;
+      margin-bottom: 15px;
+    }
+    .content {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #222;
+    }
+    .back {
+      margin-top: 20px;
+      display: inline-block;
+      color: #0066cc;
+      text-decoration: none;
+    }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.wrap {
+  max-width: 800px;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.content {
+  max-width: 100%;
+  overflow-x: hidden;
+  word-wrap: break-word;
+}
+
+#content img {
+  display: block;
+  max-width: 100% !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 12px auto;
+}
+
+* { box-sizing: border-box }
+html, body { overflow-x:hidden }
+
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <h1 id="title">Đang tải...</h1>
+  <div class="date" id="date"></div>
+  <div class="content" id="content"></div>
+
+  <a href="index.html" class="back">← Quay lại</a>
+</div>
+
+
+<script type="module" src="./admin/assets/js/notice.js"></script>
+
+
+</body>
+</html>

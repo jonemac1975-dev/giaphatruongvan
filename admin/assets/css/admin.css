@@ -1,0 +1,1137 @@
+/* =========================================================
+   ADMIN CSS – DÙNG CHUNG TOÀN BỘ HỆ THỐNG
+   Mục tiêu:
+   - Dễ đọc – dễ bóc sửa
+   - Mỗi khu vực như 1 module
+   - Không màu mè – làm lâu không mỏi mắt
+========================================================= */
+
+
+/* =========================================================
+   [MODULE 0] : BIẾN MÀU – THEME CHUNG
+   → ĐỔI MÀU TOÀN HỆ THỐNG CHỈ Ở ĐÂY
+========================================================= */
+:root {
+  --bg-main: #f5f7fb;
+  --bg-panel: #ffffff;
+
+  --color-primary: #2563eb;
+  --color-primary-soft: #eef2ff;
+
+  --color-danger: #dc2626;
+  --color-danger-soft: #fee2e2;
+
+  --color-border: #e5e7eb;
+  --color-text: #111827;
+  --color-muted: #6b7280;
+
+  --radius: 8px;
+  --shadow: 0 2px 8px rgba(0,0,0,.06);
+
+  --font-main: system-ui, -apple-system, BlinkMacSystemFont;
+}
+
+
+/* =========================================================
+   [MODULE 1] : RESET + BODY
+========================================================= */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-main);
+  background: var(--bg-main);
+  color: var(--color-text);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   [MODULE 2] : HEADER / TOP BAR
+========================================================= */
+header {
+  background: #0f172a;
+  color: #fff;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+header a {
+  color: #cbd5f5;
+  text-decoration: none;
+  margin-left: 16px;
+  font-weight: 500;
+}
+
+header a:hover {
+  color: #ffffff;
+}
+
+
+/* =========================================================
+   TAB MENU – NÚT CHUYỂN TAB (8 tab luôn nhìn thấy)
+========================================================= */
+.tabs {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 18px;
+  background: var(--bg-panel, #ffffff); /* nền panel */
+  border-bottom: 1px solid var(--color-border, #e5e7eb);
+}
+
+.tabs button {
+  display: inline-flex !important;
+  padding: 10px 16px;
+  border-radius: var(--radius, 8px);
+  border: 1px solid var(--color-border, #e5e7eb);
+  background: #f3f4f6;   /* màu nhạt khác màu nền panel */
+  color: var(--color-text, #111827);
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.tabs button.active {
+  background: var(--color-primary, #2563eb); /* màu chính khi active */
+  color: #fff;
+  border-color: var(--color-primary, #2563eb);
+}
+
+.tabs button:hover {
+  background: var(--color-primary-soft, #eef2ff); /* hover nhẹ */
+}
+
+/* mobile */
+@media (max-width: 900px) {
+  .tabs button {
+    flex: 1 1 45%;
+    font-size: 13px;
+    padding: 5px 8px;
+  }
+}
+
+
+/* =========================================================
+   TAB CONTENT – KHUNG NỘI DUNG
+========================================================= */
+.tab-content {
+  display: none;       /* mặc định ẩn nội dung */
+  padding: 20px;
+  min-height: 300px;
+  background: var(--bg-panel);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.tab-content.active {
+  display: block;      /* chỉ tab active hiển thị */
+}
+
+.tab-content h3 {
+  margin: 0 0 16px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+/* =========================================================
+   MOBILE – HỖ TRỢ
+========================================================= */
+@media (max-width: 900px) {
+  .tabs {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .tabs button {
+    flex: 1 1 45%;   /* mỗi nút gần 50% chiều rộng */
+    font-size: 13px;
+    padding: 5px 8px;
+  }
+
+  .tab-content {
+    padding: 15px;
+  }
+}
+
+
+
+/* =========================================================
+   [MODULE 5] : FORM / GROUP (DÙNG CHUNG)
+========================================================= */
+.group {
+  background: var(--bg-panel);
+  padding: 16px;
+  margin-bottom: 18px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  font-size: 15px;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  background: #f9fafb;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  background: #ffffff;
+}
+
+
+/* =========================================================
+   [MODULE 6] : BUTTON – CHUẨN HÓA
+========================================================= */
+button {
+  padding: 8px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  background: #f3f4f6;
+  cursor: pointer;
+}
+
+/* nút thêm / lưu */
+button[id^="btn-add"],
+button[id^="btn-save"],
+.btn-add,
+.btn-save {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+}
+
+button[id^="btn-add"]:hover,
+button[id^="btn-save"]:hover {
+  background: #1d4ed8;
+}
+
+/* nút xóa */
+.btn-xoa,
+button[id^="btn-xoa"] {
+  background: var(--color-danger);
+  border-color: var(--color-danger);
+  color: #ffffff;
+}
+
+.btn-xoa:hover {
+  background: #b91c1c;
+}
+
+/* =========================================================
+   MOBILE – HỖ TRỢ
+========================================================= */
+@media (max-width: 900px) {
+  .tabs {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .tabs button {
+    flex: 1 1 45%;   /* mỗi nút gần 50% chiều rộng */
+    font-size: 13px;
+    padding: 5px 8px;
+  }
+
+  .tab-content {
+    padding: 15px;
+  }
+}
+/* =================================================
+   BUTTON – XÓA (NGUY HIỂM)
+================================================= */
+
+button#btnXoa,
+button#btnXoaAnh,
+button#btnXoaClip,
+#tab1 .btn-xoa,
+#tab1 .btn-xoa-vo,
+#tab1 .btn-xoa-con {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #fff;
+  font-weight: 700;
+}
+
+button#btnXoa:hover,
+button#btnXoaAnh:hover,
+button#btnXoaClip:hover,
+#tab1 .btn-xoa:hover,
+#tab1 .btn-xoa-vo:hover,
+#tab1 .btn-xoa-con:hover {
+  background: #b91c1c;
+}
+
+
+/* =================================================
+   BUTTON – CHUNG (KHÔNG PHẢI XÓA)
+================================================= */
+
+button {
+  background: #6b7280;      /* ghi đậm */
+  border-color: #6b7280;
+  color: #fff;
+padding: 4px 8px;      /* trước ~7px 14px */
+  font-size: 12.5px;      /* trước ~16px */
+  border-radius: 6px;
+}
+
+button:hover {
+  background: #4b5563;
+}
+
+
+/* =================================================
+   INPUT – PHẤN HỒNG NHẠT (TOÀN ADMIN)
+================================================= */
+
+input,
+select,
+textarea {
+  background: #fff1f2;      /* hồng phấn rất nhẹ */
+  border: 1px solid #fbcfe8;
+  color: #111827;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  background: #ffffff;
+  border-color: #ec4899;
+  outline: none;
+}
+
+/* =========================================================
+   [MODULE TAB 1] : NHẬP LIỆU CÁ NHÂN – 2 CỘT
+========================================================= */
+
+#tab1 .wrap {
+  display: grid;
+  grid-template-columns: 58% 42%;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+/* ================= LEFT ================= */
+#tab1 .left {
+  background: transparent;
+}
+
+/* mỗi group */
+#tab1 .left .group {
+  margin-bottom: 16px;
+}
+
+/* ================= FORM GRID (THEO FIELD) ================= */
+/* CHỈ group nào cần chia cột mới dùng class này */
+#tab1 .group.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+/* ===== FIELD: label trên – input dưới (1 khối duy nhất) ===== */
+#tab1 .field,
+#tab1 .vo-form .field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* input full width */
+#tab1 .field input,
+#tab1 .field select,
+#tab1 .field textarea,
+#tab1 .vo-form input,
+#tab1 .vo-form textarea {
+  width: 100%;
+}
+
+/* textarea, block lớn full hàng */
+#tab1 .field.full,
+#tab1 #vo-container {
+  grid-column: 1 / -1;
+}
+
+/* ================= BUTTONS ================= */
+#tab1 .buttons {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* preview ảnh */
+#previewAnh {
+  max-width: 120px;
+  border-radius: 6px;
+  margin-top: 6px;
+}
+
+/* ================= RIGHT ================= */
+#tab1 .right {
+  background: var(--bg-panel);
+  padding: 16px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  min-height: 300px;
+}
+
+#tab1 .right h3 {
+  margin-top: 0;
+}
+
+#tree {
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+/* =================================================
+   TAB 1 – VỢ / CON (NHẬP NHANH)
+================================================= */
+
+/* NÚT – nhỏ gọn */
+#tab1 .btn-xoa-vo,
+#tab1 .btn-xoa-con,
+#tab1 #btnThemVo,
+#tab1 .btn-them-con {
+  padding: 4px 8px;
+  font-size: 12.5px;
+  border-radius: 6px;
+}
+
+/* xóa vợ */
+#tab1 .btn-xoa-vo {
+  background: #b91c1c;
+  border-color: #b91c1c;
+  color: #fff;
+}
+#tab1 .btn-xoa-vo:hover {
+  background: #991b1b;
+}
+
+/* xóa con */
+#tab1 .btn-xoa-con {
+  background: #ef4444;
+  border-color: #ef4444;
+  color: #fff;
+}
+#tab1 .btn-xoa-con:hover {
+  background: #dc2626;
+}
+
+/* thêm */
+#tab1 #btnThemVo,
+#tab1 .btn-them-con {
+  background: #6b7280;
+  border-color: #6b7280;
+  color: #fff;
+}
+#tab1 #btnThemVo:hover,
+#tab1 .btn-them-con:hover {
+  background: #4b5563;
+}
+
+/* ================= KHUNG VỢ ================= */
+.vo-form {
+  background: #f9fafb;
+  padding: 14px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  border: 1px solid #e5e7eb;
+}
+
+.vo-form > b {
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+/* nút thêm con đặt TRƯỚC */
+.vo-form .btn-them-con {
+  margin-bottom: 6px;
+}
+
+/* mỗi dòng con: [input] [xóa] */
+.vo-form .con-box > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.vo-form .con-box input.con {
+  flex: 1;
+  padding: 8px 10px;
+  font-size: 14px;
+}
+
+/* label + input nằm 1 dòng */
+#tab1 .row {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+#tab1 .row label {
+  margin: 0;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* textarea full dòng */
+#tab1 .row.full {
+  grid-template-columns: 1fr;
+}
+
+#tab1 .row.full label {
+  margin-bottom: 4px;
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 900px) {
+  #tab1 .wrap {
+    grid-template-columns: 1fr;
+  }
+
+  #tab1 .right {
+    margin-top: 20px;
+  }
+}
+
+
+/* ===== TREE UX ===== */
+
+/* ĐỜI */
+#tree .doi-list {
+  cursor: pointer;
+  padding: 4px 6px;
+  margin: 2px 0;
+  border-radius: 6px;
+  background: #eef2ff;           /* xanh nhạt */
+  color: #1e3a8a;
+  font-weight: 600;
+}
+
+#tree .doi-list:hover {
+  background: #c7d2fe;           /* hover đậm hơn */
+}
+
+/* ĐỜI đang mở */
+#tree .doi-list.open {
+  background: #a5b4fc;
+}
+
+/* TÊN */
+#tree .ten-list {
+  cursor: pointer;
+  padding: 3px 6px;
+  margin: 1px 0 1px 20px;
+  border-radius: 6px;
+  background: #f0fdf4;           /* xanh lá nhạt */
+  color: #065f46;
+}
+
+#tree .ten-list:hover {
+  background: #bbf7d0;
+}
+
+/* ===== CHI ===== */
+#tree .chi-item {
+  cursor: pointer;
+  padding: 6px 10px;
+  margin: 4px 0;
+  border-radius: 8px;
+  background: #fff7ed;       /* cam nhạt */
+  color: #9a3412;
+  font-weight: 700;
+  user-select: none;
+}
+
+#tree .chi-item:hover {
+  background: #fed7aa;
+}
+
+/* Chi đang mở */
+#tree .chi-item.open {
+  background: #fdba74;
+}
+
+
+
+/* =========================================================
+   TAB 2 – TRƯỞNG HỌ / TRƯỞNG CHI
+  
+========================================================= */
+/* ================= TAB 2 – LAYOUT 2 CỘT ================= */
+#tab2 .wrap {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* LEFT – nhập liệu */
+#tab2 .group:first-of-type,
+#tab2 .group:nth-of-type(2) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  flex: 1 1 50%; /* 50% bề ngang màn hình */
+  align-items: center;
+}
+
+#tab2 .group label {
+  width: 100px;        /* nhãn cố định */
+  margin-bottom: 0;
+  font-weight: 600;
+}
+
+#tab2 .group input,
+#tab2 .group select {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border, #e5e7eb);
+}
+
+/* nút thêm / lưu */
+#tab2 .group button {
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--color-primary, #2563eb);
+  background: var(--color-primary, #2563eb);
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+#tab2 .group button:hover {
+  background: #1d4ed8;
+}
+
+/* ================= RIGHT – bảng danh sách ================= */
+#tab2 table {
+  width: 50%;
+  border-collapse: collapse;
+  flex: 1 1 50%; /* 50% bề ngang màn hình */
+}
+
+#tab2 table th,
+#tab2 table td {
+
+  border: 1px solid var(--color-border, #e5e7eb);
+  padding: 6px 8px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+#tab2 table td:last-child {
+  text-align: center;
+}
+
+/* nút xóa [X] */
+#tab2 table td:last-child .btn-xoa {
+  background: #dc2626;
+  border: 1px solid #dc2626;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+#tab2 table td:last-child .btn-xoa:hover {
+  background: #b91c1c;
+}
+
+/* responsive – màn hình nhỏ xuống 1 cột */
+@media (max-width: 900px) {
+  #tab2 .group:first-of-type,
+  #tab2 .group:nth-of-type(2),
+  #tab2 table {
+    flex: 1 1 100%;
+  }
+
+  #tab2 .group label {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+  TAB3: THÔNG TIN
+========================================================= */
+#tab3 table {
+  width: 70%;
+  border-collapse: collapse;
+  flex: 1 1 50%; /* 50% bề ngang màn hình */
+}
+
+#tab3 table th,
+#tab3 table td {
+
+  border: 1px solid var(--color-border, #e5e7eb);
+  padding: 6px 8px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+#tab3 table td:last-child {
+  text-align: center;
+}
+
+/* nút xóa [X] */
+#tab3 table td:last-child .btn-xoa {
+  background: #dc2626;
+  border: 1px solid #dc2626;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+
+#tab3 table td:last-child .btn-xoa:hover {
+  background: #b91c1c;
+}
+
+/* responsive – màn hình nhỏ xuống 1 cột */
+@media (max-width: 900px) {
+  #tab3 .group:first-of-type,
+  #tab3 .group:nth-of-type(2),
+  #tab3 table {
+    flex: 1 1 100%;
+  }
+
+  #tab3 .group label {
+    width: 100%;
+  }
+}
+
+.content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 12px auto;
+  border-radius: 6px;
+}
+
+/* căn trái / phải nếu cần */
+.content img.left {
+  float: left;
+  margin: 8px 12px 8px 0;
+  max-width: 45%;
+}
+
+.content img.right {
+  float: right;
+  margin: 8px 0 8px 12px;
+  max-width: 45%;
+}
+
+/* ===== NỘI DUNG THÔNG BÁO ===== */
+.notice-content img,
+#content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  box-sizing: border-box;
+}
+
+/* căn giữa */
+.notice-content img.center,
+#content img.center {
+  margin: 12px auto;
+}
+
+/* căn phải */
+.notice-content img.right,
+#content img.right {
+  float: right;
+  max-width: 60%;
+  margin: 8px 0 8px 12px;
+}
+
+@media (max-width: 768px) {
+  #content img.right {
+    float: none !important;
+    display: block;
+    max-width: 100% !important;
+    margin: 12px auto !important;
+  }
+}
+
+#content img.right {
+  float: right;
+  max-width: 60%;
+  margin: 8px 0 8px 12px;
+}
+
+@media (max-width: 768px) {
+  #content img.right {
+    float: none !important;
+    display: block;
+    max-width: 100% !important;
+    margin: 12px auto !important;
+  }
+}
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+#content img {
+  display: block;
+  max-width: 100% !important;
+  height: auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+
+/* =========================================================
+  TAB4: ảnh Sự Kiện
+========================================================= */
+#tab4 table {
+  width: 70%;
+  border-collapse: collapse;
+  flex: 1 1 50%; /* 50% bề ngang màn hình */
+}
+
+#tab4 table th,
+#tab4 table td {
+
+  border: 1px solid var(--color-border, #e5e7eb);
+  padding: 6px 8px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+#tab4 table td:last-child {
+  text-align: center;
+}
+
+/* nút xóa [X] */
+#tab4 table td:last-child .btn-xoa {
+  background: #dc2626;
+  border: 1px solid #dc2626;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+
+#tab4 table td:last-child .btn-xoa:hover {
+  background: #b91c1c;
+}
+
+/* responsive – màn hình nhỏ xuống 1 cột */
+@media (max-width: 900px) {
+  #tab5 .group:first-of-type,
+  #tab5 .group:nth-of-type(2),
+  #tab5 table {
+    flex: 1 1 100%;
+  }
+
+  #tab4 .group label {
+    width: 100%;
+  }
+}
+
+
+/* =========================================================
+  TAB5: Clip Sự Kiện
+========================================================= */
+#tab5 table {
+  width: 70%;
+  border-collapse: collapse;
+  flex: 1 1 50%; /* 50% bề ngang màn hình */
+}
+
+#tab5 table th,
+#tab5 table td {
+
+  border: 1px solid var(--color-border, #e5e7eb);
+  padding: 6px 8px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+#tab5 table td:last-child {
+  text-align: center;
+}
+
+/* nút xóa [X] */
+#tab5 table td:last-child .btn-xoa {
+  background: #dc2626;
+  border: 1px solid #dc2626;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+
+#tab5 table td:last-child .btn-xoa:hover {
+  background: #b91c1c;
+}
+
+/* responsive – màn hình nhỏ xuống 1 cột */
+@media (max-width: 900px) {
+  #tab5 .group:first-of-type,
+  #tab5 .group:nth-of-type(2),
+  #tab5 table {
+    flex: 1 1 100%;
+  }
+
+  #tab5 .group label {
+    width: 100%;
+  }
+}
+/* =========================================================
+  TAB6: Kenh youtube
+========================================================= */
+#tab6 table {
+  width: 70%;
+  border-collapse: collapse;
+  flex: 1 1 50%; /* 50% bề ngang màn hình */
+}
+
+#tab6 table th,
+#tab6 table td {
+
+  border: 1px solid var(--color-border, #e5e7eb);
+  padding: 6px 8px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+#tab6 table td:last-child {
+  text-align: center;
+}
+
+/* nút xóa [X] */
+#tab6 table td:last-child .btn-xoa {
+  background: #dc2626;
+  border: 1px solid #dc2626;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+
+#tab6 table td:last-child .btn-xoa:hover {
+  background: #b91c1c;
+}
+
+/* responsive – màn hình nhỏ xuống 1 cột */
+@media (max-width: 900px) {
+  #tab6 .group:first-of-type,
+  #tab6 .group:nth-of-type(2),
+  #tab6 table {
+    flex: 1 1 100%;
+  }
+
+  #tab6 .group label {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+  TAB7: ảnh nền head
+========================================================= */
+#tab7 table {
+  width: 70%;
+  border-collapse: collapse;
+  flex: 1 1 50%; /* 50% bề ngang màn hình */
+}
+
+#tab7 table th,
+#tab7 table td {
+
+  border: 1px solid var(--color-border, #e5e7eb);
+  padding: 6px 8px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+#tab7 table td:last-child {
+  text-align: center;
+}
+
+/* nút xóa [X] */
+#tab7 table td:last-child .btn-xoa {
+  background: #dc2626;
+  border: 1px solid #dc2626;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+#tab7 table td:last-child .btn-xoa:hover {
+  background: #b91c1c;
+}
+
+/* responsive – màn hình nhỏ xuống 1 cột */
+@media (max-width: 900px) {
+  #tab7 .group:first-of-type,
+  #tab7 .group:nth-of-type(2),
+  #tab7 table {
+    flex: 1 1 100%;
+  }
+
+  #tab7 .group label {
+    width: 100%;
+  }
+}
+
+
+
+
+
+/* =========================================================
+  TAB8: danh sách chi
+========================================================= */
+#tab8 table {
+  width: 30%;
+  border-collapse: collapse;
+  flex: 1 1 50%; /* 50% bề ngang màn hình */
+}
+
+#tab8 table th,
+#tab8 table td {
+
+  border: 1px solid var(--color-border, #e5e7eb);
+  padding: 6px 8px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+#tab8 table td:last-child {
+  text-align: center;
+}
+
+/* nút xóa [X] */
+#tab8 table td:last-child .btn-xoa {
+  background: #dc2626;
+  border: 1px solid #dc2626;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+#tab8 table td:last-child .btn-xoa:hover {
+  background: #b91c1c;
+}
+
+/* responsive – màn hình nhỏ xuống 1 cột */
+@media (max-width: 900px) {
+  #tab8 .group:first-of-type,
+  #tab8 .group:nth-of-type(2),
+  #tab8 table {
+    flex: 1 1 100%;
+  }
+
+  #tab8 .group label {
+    width: 100%;
+  }
+}
+
+
+
+
+/* =========================================================
+   [MODULE 9] : HỖ TRỢ MOBILE (CƠ BẢN)
+========================================================= */
+@media (max-width: 768px) {
+  .tabs {
+    flex-wrap: wrap;
+  }
+
+  table {
+    font-size: 13px;
+  }
+}
+
+
+/* ===== CHANGE PASSWORD MODAL ===== */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal.hidden { display: none; }
+
+.modal-box {
+  background: #fff;
+  padding: 18px;
+  width: 300px;
+  border-radius: 8px;
+}
+
+.modal-box h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.modal-box input {
+  width: 100%;
+  margin: 6px 0;
+  padding: 6px;
+}
+
+.modal-actions {
+  margin-top: 10px;
+  text-align: right;
+}
+
+.modal-actions button {
+  margin-left: 6px;
+}
