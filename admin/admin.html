@@ -54,6 +54,7 @@
   <button data-tab="tab6">6. Youtube</button>
   <button data-tab="tab7">7. Ảnh nền Head</button>
   <button data-tab="tab8">8. Danh sách Chi</button>
+  <button data-tab="tab9">9. Sách gia phả</button>
 </div>
 
 
@@ -444,7 +445,75 @@
 
 </div>
 
+<!-- ================================================= -->
+<!-- =========== TAB 9 : sách gia phả ======= -->
+<!-- ================================================= -->
+<div id="tab9" class="tab-content">
 
+  <h3>9.sách Gia phả</h3>
+
+  <!-- ===== FORM NHẬP SÁCH ===== -->
+  <div class="group">
+
+    <label for="book-title">Tiêu đề thông báo</label>
+    <input id="book-title" type="text" placeholder="Nhập tiêu đề..." />
+
+    <label for="book-summary">Tóm tắt (hiển thị trên index)</label>
+    <input id="book-summary" type="text" placeholder="Nhập mô tả ngắn..." />
+
+    <label>Nội dung chi tiết</label>
+
+    <!-- ===== TOOLBAR CHÈN NỘI DUNG ===== -->
+    <div class="editor-toolbar" style="margin:6px 0; display:flex; gap:6px; flex-wrap:wrap">
+      <input type="file" id="book-image" accept="image/*" hidden>
+           
+  <button type="button" id="btn-insert-flip">📖 Chèn sách</button>
+     
+    </div>
+
+    <!-- ===== Ô NHẬP HTML (DÁN WORD) ===== -->
+    <div
+      id="book-content"
+      contenteditable="true"
+      class="editor"
+      style="
+        min-height:160px;
+        padding:10px;
+        border:1px solid #ccc;
+        background:#fff;
+        overflow:auto
+      "
+      placeholder="Dán nội dung từ Word vào đây..."
+    ></div>
+
+   <label for="book-link">Link đính kèm (nếu có)</label>
+    <input id="book-link" type="text" placeholder="https://..." />
+
+    <div class="actions">
+      <button id="book-add">Thêm</button>
+      <button id="book-save" disabled>Lưu</button>
+      <button id="book-clear" type="button">Xoá form</button>
+    </div>
+
+  </div>
+
+  <!-- ===== DANH SÁCH   ===== -->
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th style="width:60px">STT</th>
+        <th>Tiêu đề</th>
+        <th style="width:120px">Ngày</th>
+        <th style="width:100px">Preview</th>
+        <th style="width:100px">Thao tác</th>
+      </tr>
+    </thead>
+    <tbody id="book-list">
+      <!-- JS render -->
+    </tbody>
+  </table>
+
+</div>
 <!-- ===== JS ===== -->
 <script type="module" src="/admin/assets/js/admin.js"></script>
 <script type="module" src="/admin/assets/js/tab1.js"></script>
@@ -455,6 +524,7 @@
 <script type="module" src="/admin/assets/js/tab6.js"></script>
 <script type="module" src="/admin/assets/js/tab7.js"></script>
 <script type="module" src="/admin/assets/js/tab8.js"></script>
+<script type="module" src="/admin/assets/js/tab9.js"></script>
 <script type="module" src="/admin/assets/js/change-pass.js"></script>
 
 
