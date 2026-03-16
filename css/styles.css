@@ -618,3 +618,54 @@ footer {
     min-width: 900px;
   }
 }
+
+.book-card{
+  display:inline-block;
+  width:60px;
+ height:60px;
+  border-radius:8px;
+  overflow:hidden;
+  background:#fff;
+  text-decoration:none;
+  box-shadow:0 4px 10px rgba(0,0,0,0.15);
+  transition:0.2s;
+}
+
+.book-card{ 
+  display:inline-block;
+  width:80px;
+  border-radius:8px;
+  background:#fff;
+  text-decoration:none;
+  box-shadow:0 4px 10px rgba(0,0,0,0.15);
+  transition:0.2s;
+  overflow:visible;   /* quan trọng */
+}
+
+.book-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 6px 16px rgba(0,0,0,0.2);
+}
+
+.book-card img{
+  width:100%;
+  height:auto;
+  display:block;
+  border-radius:8px 8px 0 0;
+}
+
+.book-label{
+  display:block;
+  text-align:center;
+  padding:6px 4px;
+  font-size:12px;
+  font-weight:bold;
+  color:#8b0000;
+}
+
+.book-center{
+  display:flex;
+  justify-content:center;   /* căn giữa ngang */
+  align-items:center;
+  margin-top:0px;
+}
