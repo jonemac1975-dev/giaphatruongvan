@@ -30,7 +30,7 @@ async function loadNotice() {
     const data = await firebaseGet(path);
 
     if (!data || data.status === 0) {
-      titleEl.innerText = "Nội dung không tồn tại";
+      titleEl.innerText = "Đang cập nhật...";
       contentEl.innerText = "";
       return;
     }
