@@ -217,3 +217,30 @@ export async function getChi(){
 export async function deleteChi(id){
   return await firebaseDelete(`${BASE_CHI}/${id}`);
 }
+
+/* ==================================================
+   TAB 9: SÁCH GIA PHẢ
+================================================== */
+const BASE_BOOK = "content/book";
+
+export async function addBook(data){
+  return await firebasePush(BASE_BOOK, data);
+}
+
+export async function getBooks(){
+  const snap = await firebaseGet(BASE_BOOK);
+  if (!snap) return [];
+  return Object.entries(snap).map(([id, v]) => ({
+    id,
+    ...v
+  }));
+}
+
+export async function updateBook(id, data){
+  const { id: _remove, ...pure } = data;
+  return await firebaseSet(`${BASE_BOOK}/${id}`, pure);
+}
+
+export async function deleteBook(id){
+  return await firebaseDelete(`${BASE_BOOK}/${id}`);
+}
