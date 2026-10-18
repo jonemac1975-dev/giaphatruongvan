@@ -189,7 +189,7 @@ html, body {
   background-image: url("/store/trongdong.jpg");
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 330px;
+  background-size: 500px;
 
   animation: rotateTrongDong 120s linear infinite;
   transform-origin: center center;
@@ -370,42 +370,69 @@ font-size: 13.5px;
 .children-box { margin-top: 6px; padding-left: 10px; }
 .info-avatar { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 8px; }
 
+
 /* =====================================================
-   FIX LAYOUT 2 CỘT – CÂY + THÔNG TIN (CHỐT)
+   LAYOUT – CÂY GIA PHẢ VÀ THÔNG TIN CĂN GIỮA
 ===================================================== */
-
-.content-row {
-  display: flex;
-  gap: 10px;
-  padding: 10px;
-  align-items: stretch;
+.content-row{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:20px;
+  width:100%;
+  padding:10px;
+  box-sizing:border-box;
 }
 
-.tree-column {
-  flex: 0 0 65%;
-  max-width: 65%;
-  min-width: 0; /* 🔑 chống tràn SVG */
+.tree-column,
+.info-column{
+  flex:0 0 auto;
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  margin:0 auto;
+  box-sizing:border-box;
 }
 
-.info-column {
-  flex: 0 0 35%;
-  max-width: 35%;
-  display: flex;
-  flex-direction: column;
+.tree-column > .panel,
+.info-column > .panel{
+  width:100%;
+  margin:0 auto;
+  box-sizing:border-box;
 }
 
-/* mobile: xếp dọc */
-@media (max-width: 900px) {
-  .content-row {
-    flex-direction: column;
+#tree-wrapper{
+  width:100%;
+  box-sizing:border-box;
+}
+
+#tree-scroll{
+  width:100%;
+  box-sizing:border-box;
+}
+
+#genealogy-svg{
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.info-column .panel > h3{
+  text-align:center;
+}
+
+@media(max-width:900px){
+  .content-row{
+    padding:8px;
+    gap:14px;
   }
-
   .tree-column,
-  .info-column {
-    flex: 1 1 100%;
-    max-width: 100%;
+  .info-column{
+    width:100%;
+    max-width:100%;
   }
 }
+
 
 /* =====================================================
    MEDIA (ẢNH, CLIP, YOUTUBE, MAP)
@@ -668,4 +695,933 @@ footer {
   justify-content:center;   /* căn giữa ngang */
   align-items:center;
   margin-top:0px;
+}
+
+/* =====================================================
+   GIA PHẢ 3D FLIPBOOK - STYLESHEET HOÀN CHỈNH (CHUẨN 1000PX)
+   ===================================================== */
+
+:root {
+  --bg-dark: #120d0a;
+  --wood-dark: #2a1810;
+  --wood-light: #4a2c1d;
+  --gold-primary: #d4af37;
+  --gold-light: #f3e5ab;
+  --parchment-bg: #f4e8c1;
+  --text-dark: #2c1a0e;
+  --text-muted: #6b523f;
+  --accent-red: #8b0000;
+}
+
+/* KHUNG TỔNG THỂ */
+#family-book {
+  width: 100%;
+  max-width: 1100px;
+  min-height: 720px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: 20px auto;
+  perspective: 3000px;
+}
+
+/* BÌA SỔ ĐÓNG */
+#closedCoverView {
+  width: 500px;
+  height: 660px;
+  background: linear-gradient(135deg, #3d1e10 0%, #1f0e07 100%);
+  border: 12px solid #2a140a;
+  border-radius: 12px 24px 24px 12px;
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.8), 20px 20px 50px rgba(0,0,0,0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  z-index: 20;
+  transform-origin: left center;
+}
+
+#closedCoverView::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 32px;
+  background: linear-gradient(90deg, #180903 0%, #4a2817 50%, #180903 100%);
+  border-right: 2px solid var(--gold-primary);
+  border-radius: 12px 0 0 12px;
+}
+
+.book-cover-content {
+  width: 82%;
+  height: 88%;
+  border: 3px double var(--gold-primary);
+  border-radius: 8px;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.book-cover-title {
+  font-family: 'Cinzel', serif;
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--gold-primary);
+  letter-spacing: 4px;
+  margin-top: 20px;
+}
+
+.book-cover-family {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--gold-light);
+  border-bottom: 2px solid var(--gold-primary);
+  padding-bottom: 10px;
+  width: 80%;
+}
+
+.book-cover-place {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  color: #cbb290;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+#openBookBtn {
+  background: linear-gradient(180deg, var(--gold-primary) 0%, #a38118 100%);
+  color: #120d0a;
+  border: 1px solid var(--gold-light);
+  padding: 14px 32px;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  border-radius: 30px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+/* ================= KHUNG SỔ MỞ (HIỂN THỊ SONG SONG 2 TRANG) ================= */
+#openBookView {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+}
+
+#openBookView[hidden] {
+  display: none !important;
+}
+
+#bookContainer {
+  width: 1000px;
+  height: 660px;
+  position: relative;
+  perspective: 3000px;
+  margin: 0 auto 15px auto;
+}
+
+/* TỜ GIẤY LẬT RỘNG 1000PX (CHỨA ĐỒNG THỜI 2 TRANG TRÁI VÀ PHẢI) */
+.sheet {
+  position: absolute;
+  width: 1000px;
+  height: 660px;
+  top: 0;
+  right: 0;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transition: transform 0.85s cubic-bezier(0.645, 0.045, 0.355, 1);
+  will-change: transform;
+}
+
+.sheet.flipped {
+  transform: rotateY(-180deg);
+}
+
+/* MỖI TRANG RỘNG 500PX THOẢI MÁI HIỂN THỊ NỘI DUNG */
+.sheet-page {
+  position: absolute;
+  width: 500px;
+  height: 100%;
+  top: 0;
+  background-color: var(--parchment-bg);
+  background-image: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.4) 0%, rgba(0,0,0,0.06) 100%);
+  color: var(--text-dark);
+  padding: 35px 30px;
+  box-shadow: inset 0 0 30px rgba(110, 80, 40, 0.25);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  border: 1px solid #dcd0a8;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Trang mặt trước: NẰM BÊN PHẢI (Trang lẻ: 1, 3, 5...) */
+.sheet-page-front {
+  left: 500px;
+  border-radius: 0 10px 10px 0;
+  z-index: 2;
+}
+
+/* Trang mặt sau khi lật: NẰM BÊN TRÁI (Trang chẵn: 2, 4, 6...) */
+.sheet-page-back {
+  left: 0;
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  border-radius: 10px 0 0 10px;
+  z-index: 1;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* GÁY VÀ HIỆU ỨNG THẨM MỸ */
+.page-seam-right {
+  box-shadow: inset 25px 0 30px -10px rgba(0, 0, 0, 0.2);
+}
+
+.page-seam-left {
+  box-shadow: inset -25px 0 30px -10px rgba(0, 0, 0, 0.2);
+}
+
+.sheet-page-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.sheet-page-content::-webkit-scrollbar {
+  width: 4px;
+}
+.sheet-page-content::-webkit-scrollbar-thumb {
+  background: var(--gold-primary);
+  border-radius: 4px;
+}
+
+.sheet-page-footer {
+  height: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(139, 0, 0, 0.2);
+  padding-top: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* GÓC LẬT TRANG */
+.book-page-corner {
+  position: absolute;
+  bottom: 0;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, transparent 50%, rgba(212, 175, 55, 0.3) 100%);
+  cursor: pointer;
+  border: none;
+  z-index: 10;
+}
+
+.book-page-corner.right {
+  right: 0;
+  border-radius: 0 0 10px 0;
+}
+
+.book-page-corner.left {
+  left: 0;
+  transform: scaleX(-1);
+  border-radius: 0 0 10px 0;
+}
+
+/* NỘI DUNG TRONG TRANG */
+.sheet-page h2 {
+  font-family: 'Cinzel', serif;
+  color: var(--accent-red);
+  font-size: 1.5rem;
+  text-align: center;
+  border-bottom: 2px double var(--accent-red);
+  padding-bottom: 6px;
+  margin-bottom: 12px;
+}
+
+.sheet-page h3 {
+  font-family: 'Playfair Display', serif;
+  color: #5a1111;
+  font-size: 1.15rem;
+  margin: 15px 0 8px 0;
+  border-bottom: 1px dashed #b89b72;
+  padding-bottom: 4px;
+}
+
+.book-member-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.book-member-link {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid #d3c49e;
+  border-radius: 6px;
+  padding: 8px 12px;
+  text-align: left;
+  font-family: 'Playfair Display', serif;
+  font-size: 0.95rem;
+  color: var(--text-dark);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s;
+}
+
+.book-member-link:hover {
+  background: #fff;
+  border-color: var(--accent-red);
+  color: var(--accent-red);
+  transform: translateX(4px);
+}
+
+.book-person-avatar {
+  width: 100px;
+  height: 120px;
+  object-fit: cover;
+  border: 2px solid var(--gold-primary);
+  border-radius: 6px;
+  float: right;
+  margin: 0 0 10px 12px;
+}
+
+.book-profile-fields p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 6px;
+  color: #3a2518;
+}
+
+.book-wife {
+  background: rgba(230, 218, 185, 0.4);
+  border-left: 3px solid var(--accent-red);
+  padding: 8px 10px;
+  margin-bottom: 8px;
+}
+
+.backToGenerationBtn {
+  background: transparent;
+  border: none;
+  color: var(--accent-red);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+/* THANH ĐIỀU KHIỂN DƯỚI SỔ */
+.book-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  background: rgba(42, 24, 16, 0.9);
+  border: 1px solid var(--gold-primary);
+  padding: 10px 24px;
+  border-radius: 30px;
+  margin-top: 15px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+}
+
+.book-controls button {
+  background: linear-gradient(180deg, #4a2c1d 0%, #2a1810 100%);
+  color: var(--gold-light);
+  border: 1px solid var(--gold-primary);
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#pageRange {
+  font-family: 'Cinzel', serif;
+  color: var(--gold-primary);
+  font-size: 0.95rem;
+  min-width: 120px;
+  text-align: center;
+}
+
+/* HIỆU ỨNG MỞ BÌA */
+@keyframes coverOpenAnim {
+  0% { transform: rotateY(0deg); opacity: 1; }
+  100% { transform: rotateY(-140deg); opacity: 0; }
+}
+
+#closedCoverView.book-opening {
+  position: absolute;
+  top: 0;
+  left: calc(50% - 250px);
+  animation: coverOpenAnim 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  pointer-events: none;
+  z-index: 50;
+  transform-origin: left center;
+}
+
+
+#bookContainer .sheet{
+  position:absolute;
+  top:0;
+  right:0;
+  width:50%;
+  height:100%;
+  transform-style:preserve-3d;
+  transform-origin:left center;
+  transition:transform .85s cubic-bezier(.645,.045,.355,1);
+}
+#bookContainer .sheet.flipped{
+  transform:rotateY(-180deg);
+}
+#bookContainer .sheet-page{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  box-sizing:border-box;
+  padding:24px 20px 16px;
+  overflow:hidden;
+  color:#422819;
+  background:#f7f2e6;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+#bookContainer .sheet-page-front{
+  z-index:2;
+}
+#bookContainer .sheet-page-back{
+  z-index:1;
+  transform:rotateY(180deg);
+}
+
+
+/* ================= MODAL THÔNG TIN GIA PHẢ ================= */
+#familyPersonModal[hidden]{display:none!important}
+#familyPersonModal{
+  position:fixed;
+  inset:0;
+  z-index:10000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+#familyPersonModal .family-person-modal-backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(25,12,8,.72);
+  backdrop-filter:blur(4px);
+}
+#familyPersonModal .family-person-modal-dialog{
+  position:relative;
+  z-index:1;
+  display:flex;
+  flex-direction:column;
+  width:min(720px,100%);
+  max-height:88vh;
+  overflow:hidden;
+  border:2px solid #b99755;
+  border-radius:14px;
+  background:linear-gradient(145deg,#fffaf0,#f0e3c8);
+  box-shadow:0 20px 60px rgba(0,0,0,.4);
+  color:#422819;
+}
+#familyPersonModal .family-person-modal-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:16px 20px;
+  border-bottom:1px solid #d7c39b;
+  background:linear-gradient(135deg,#6b1717,#8b2525);
+  color:#f9e7b4;
+}
+#familyPersonModal .family-person-modal-header h2{
+  margin:0;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:1.25rem;
+}
+#familyPersonModal #closeFamilyPersonModal{
+  flex-shrink:0;
+  width:36px;
+  height:36px;
+  border:1px solid #d7b96e;
+  border-radius:50%;
+  background:transparent;
+  color:#fff1c8;
+  font-size:18px;
+  cursor:pointer;
+}
+#familyPersonModal #familyPersonModalContent{
+  padding:22px;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+}
+#familyPersonModal #familyPersonModalContent h2{
+  margin:8px 0 16px;
+  color:#7b2921;
+  text-align:center;
+  font-family:Georgia,"Times New Roman",serif;
+}
+#familyPersonModal #familyPersonModalContent h3{
+  margin:20px 0 10px;
+  padding-bottom:6px;
+  border-bottom:1px solid #d7c39b;
+  color:#7b2921;
+}
+#familyPersonModal #familyPersonModalContent p{
+  margin:8px 0;
+  line-height:1.65;
+  overflow-wrap:anywhere;
+}
+#familyPersonModal #familyPersonModalContent .book-person-avatar{
+  display:block;
+  width:130px;
+  max-width:100%;
+  max-height:180px;
+  margin:0 auto 14px;
+  object-fit:cover;
+  border:3px solid #c4a76b;
+  border-radius:8px;
+  box-shadow:0 4px 12px rgba(0,0,0,.15);
+}
+#familyPersonModal #familyPersonModalContent .book-wife{
+  margin-top:10px;
+  padding:12px;
+  border:1px solid #e0cfad;
+  border-radius:8px;
+  background:rgba(255,255,255,.4);
+}
+#familyPersonModal .family-person-modal-footer{
+  display:flex;
+  justify-content:center;
+  padding:14px 20px;
+  border-top:1px solid #d7c39b;
+  background:#f7ecd7;
+}
+#familyPersonModal #backFamilyPersonModal{
+  min-width:140px;
+  padding:11px 24px;
+  border:1px solid #8b2525;
+  border-radius:8px;
+  background:#7b2020;
+  color:#fff5d9;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+#familyPersonModal #backFamilyPersonModal:hover,
+#familyPersonModal #closeFamilyPersonModal:hover{
+  filter:brightness(1.12);
+}
+@media(max-width:600px){
+  #familyPersonModal{padding:10px}
+  #familyPersonModal .family-person-modal-dialog{max-height:92vh;border-radius:10px}
+  #familyPersonModal .family-person-modal-header{padding:12px 14px}
+  #familyPersonModal .family-person-modal-header h2{font-size:1.05rem}
+  #familyPersonModal #familyPersonModalContent{padding:16px}
+}
+
+
+/* ================= SỔ GIA PHẢ: MỘT TRANG TRÊN MOBILE ================= */
+#bookContainer .mobile-book-single-page{
+  left:0!important;
+  right:auto!important;
+  width:100%!important;
+  height:100%;
+  box-sizing:border-box;
+  border-radius:10px!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  backface-visibility:visible!important;
+  -webkit-backface-visibility:visible!important;
+}
+#bookContainer .mobile-book-single-page .sheet-page-content{
+  min-height:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+}
+@media(max-width:600px){
+  #bookContainer{
+    width:calc(100vw - 24px)!important;
+    max-width:100%!important;
+    height:520px!important;
+    margin:0 auto 15px!important;
+  }
+  #bookContainer .mobile-book-single-page{
+    padding:20px 14px 16px!important;
+  }
+  #bookContainer .mobile-book-single-page .sheet-page-content h2{
+    font-size:18px;
+  }
+  #bookContainer .mobile-book-single-page .book-member-link{
+    font-size:13px;
+    padding:9px 6px;
+  }
+  #openBookView .book-controls{
+    flex-wrap:wrap;
+    gap:8px;
+    width:calc(100vw - 24px);
+    box-sizing:border-box;
+    padding:10px;
+    border-radius:14px;
+  }
+  #openBookView .book-controls button{
+    padding:8px 10px;
+    font-size:12px;
+  }
+  #pageRange{
+    min-width:90px;
+    font-size:12px;
+  }
+}
+
+
+/* Đặt cột thông tin cá nhân bên dưới cây gia phả */
+.content-row{
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+}
+.tree-column,
+.info-column{
+  width:100%;
+  max-width:100%;
+  box-sizing:border-box;
+}
+
+
+/* CĂN GIỮA CÂY GIA PHẢ VÀ KHUNG THÔNG TIN */
+.tree-column,
+.info-column{
+  width:100%;
+  max-width:100%;
+  margin-left:auto;
+  margin-right:auto;
+  box-sizing:border-box;
+}
+
+.tree-column > .panel,
+.info-column > .panel{
+  width:100%;
+  margin-left:auto;
+  margin-right:auto;
+  box-sizing:border-box;
+}
+
+#tree-wrapper{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  box-sizing:border-box;
+}
+
+#tree-scroll{
+  margin-left:auto;
+  margin-right:auto;
+}
+
+#genealogy-svg{
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.info-column .panel > h3{
+  text-align:center;
+}
+
+
+/* =====================================================
+   GIAO DIỆN THÔNG TIN CÁ NHÂN – DỄ ĐỌC, HIỆN ĐẠI
+===================================================== */
+.info-column > .panel{
+  padding:20px;
+  border-radius:14px;
+  background:#fffdf8;
+  box-shadow:0 4px 16px rgba(65,45,25,.10);
+}
+
+.info-column > .panel > h3{
+  font-size:23px;
+  font-weight:700;
+  color:#7b241c;
+  text-align:center;
+  margin:0 0 18px;
+}
+
+/* Bộ lọc Chi – Đời – Tên */
+.info-column .filters{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:10px;
+  margin-bottom:16px;
+  font-size:16px;
+}
+
+.info-column .filters b{
+  font-size:16px;
+  color:#49372b;
+}
+
+.info-column .filters select{
+  min-width:145px;
+  min-height:42px;
+  padding:8px 30px 8px 12px;
+  border:1px solid #cbb99f;
+  border-radius:9px;
+  background:#fff;
+  color:#34271e;
+  font-size:16px;
+  outline:none;
+  box-sizing:border-box;
+  cursor:pointer;
+  transition:border-color .2s,box-shadow .2s;
+}
+
+.info-column .filters select:focus{
+  border-color:#9b3025;
+  box-shadow:0 0 0 3px rgba(155,48,37,.12);
+}
+
+.info-column .filters button,
+#btn-search{
+  min-height:42px;
+  padding:8px 22px;
+  border:0;
+  border-radius:9px;
+  background:linear-gradient(135deg,#8b2921,#b74432);
+  color:#fff;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+  box-shadow:0 3px 8px rgba(139,41,33,.2);
+  transition:transform .2s,box-shadow .2s;
+}
+
+.info-column .filters button:hover,
+#btn-search:hover{
+  transform:translateY(-1px);
+  box-shadow:0 5px 12px rgba(139,41,33,.25);
+}
+
+/* Nội dung thông tin */
+#person-info,
+#person-spouse,
+#person-children{
+  padding:12px;
+  border-radius:10px;
+  font-size:17px;
+  line-height:1.65;
+}
+
+.info-card{
+  padding:16px;
+  border:1px solid #e7dccb;
+  border-radius:12px;
+  background:#fffdf9;
+}
+
+.info-row{
+  grid-template-columns:130px minmax(0,1fr);
+  gap:8px;
+  font-size:16px;
+  line-height:1.7;
+  padding:3px 0;
+  overflow-wrap:anywhere;
+}
+
+.info-label{
+  color:#594332;
+}
+
+.info-value{
+  color:#222;
+}
+
+.info-title{
+  font-size:22px;
+  margin-bottom:10px;
+}
+
+.info-avatar{
+  width:84px;
+  height:84px;
+  border:3px solid #ead8b9;
+  box-shadow:0 2px 8px rgba(0,0,0,.12);
+}
+
+.spouse-title,
+.children-title{
+  font-size:22px;
+  font-weight:700;
+  color:#8b2921;
+  margin:10px 0 6px;
+}
+
+.spouse-box{
+  padding:12px;
+  margin-top:10px;
+  border:1px solid #eadfce;
+  border-radius:10px;
+  background:#fff;
+}
+
+.child-item{
+  font-size:16px;
+  line-height:1.8;
+}
+
+/* Điện thoại */
+@media(max-width:600px){
+  .info-column > .panel{
+    padding:14px;
+  }
+
+  .info-column > .panel > h3{
+    font-size:21px;
+  }
+
+  .info-column .filters{
+    gap:8px;
+  }
+
+  .info-column .filters select{
+    flex:1 1 100%;
+    width:100%;
+    min-height:46px;
+    font-size:15px;
+  }
+
+  .info-column .filters button,
+  #btn-search{
+    min-height:44px;
+    font-size:16px;
+  }
+
+  .info-row{
+    grid-template-columns:105px minmax(0,1fr);
+    gap:6px;
+    font-size:15px;
+  }
+
+  #person-info,
+  #person-spouse,
+  #person-children{
+    padding:8px;
+  }
+
+  .info-card{
+    padding:12px;
+  }
+}
+
+
+/* DROPDOWN CHỌN CHI GIA PHẢ */
+
+.book-controls label[for="familyBookBranch"]{
+  display:inline-block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  color:yellow !important;
+  font-size:17px !important;
+  font-weight:700 !important;
+  line-height:1.5 !important;
+  width:auto !important;
+  height:auto !important;
+  margin:0 6px 0 0 !important;
+  padding:4px 0 !important;
+  white-space:nowrap !important;
+  text-indent:0 !important;
+  position:relative !important;
+  z-index:5 !important;
+}
+
+#familyBookBranch{
+  min-width:165px;
+  min-height:40px;
+  padding:8px 36px 8px 12px;
+  border:1px solid #b58b50;
+  border-radius:9px;
+  background:linear-gradient(180deg,#fffdf7,#f5ead5);
+  color:#6f1d1b;
+  font-family:inherit;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+  outline:none;
+  box-shadow:0 2px 5px rgba(75,35,15,.10);
+  transition:border-color .2s,box-shadow .2s,background .2s;
+}
+#familyBookBranch:hover{
+  border-color:#8b0000;
+  background:#fff8e9;
+}
+#familyBookBranch:focus{
+  border-color:#8b0000;
+  box-shadow:0 0 0 3px rgba(139,0,0,.14);
+}
+#familyBookBranch option{
+  background:#fffdf7;
+  color:#6f1d1b;
+  font-size:15px;
+  padding:8px;
+}
+@media(max-width:600px){
+  .book-controls label[for="familyBookBranch"]{
+    font-size:14px;
+  }
+  #familyBookBranch{
+    min-width:0;
+    width:auto;
+    max-width:190px;
+    min-height:42px;
+    font-size:14px;
+    padding:8px 28px 8px 10px;
+  }
+}
+
+
+/* TIÊU ĐỀ CÂY GIA PHẢ */
+.tree-column .panel > h3{
+  display:block;
+  width:100%;
+  text-align:center;
+  font-size:26px;
+  font-weight:800;
+  color:#8b0000;
+  margin:0 0 18px;
+  padding:12px 0;
+  line-height:1.4;
+  letter-spacing:1px;
+  border-bottom:2px solid #c6a15b;
+  text-shadow:0 1px 1px rgba(0,0,0,.08);
+}
+@media(max-width:600px){
+  .tree-column .panel > h3{
+    font-size:23px;
+    padding:10px 0;
+  }
 }

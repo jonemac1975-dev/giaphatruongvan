@@ -16,7 +16,6 @@
   <div class="logo">
   <img src="store/logo.png" alt="Logo">
 </div>
-
            <div class="title">
         <div class="title-main">HIỀN LƯƠNG AN HỘI</div>
         <div class="title-sub">TRƯƠNG VĂN</div>
@@ -63,14 +62,55 @@
       </div>
     </div>
   </div>
-
   <div class="header-marquee">
     <div class="marquee-text">
       Gia tộc Trương Văn vững mạnh – đoàn kết – phát triển bền lâu
     </div>
   </div>
-
 </header>
+
+<!-- ================= SỔ GIA PHẢ ================= -->
+<section id="family-book">
+  <div id="closedCoverView">
+    <div class="book-cover-content">
+      <div class="book-cover-title">GIA PHẢ</div>
+      <div class="book-cover-family">TRƯƠNG VĂN</div>
+      <div class="book-cover-place">HIỀN LƯƠNG - AN HỘI</div>
+      <button id="openBookBtn" type="button">MỞ SỔ GIA PHẢ</button>
+    </div>
+  </div>
+  <div id="openBookView" hidden>
+    <div id="bookContainer"></div>
+
+<div class="book-controls">
+  <label for="familyBookBranch">Chọn chi:</label>
+  <select id="familyBookBranch">
+    <option value="">Tất cả các chi</option>
+  </select>
+  <button id="prevBtn" type="button">◀ Trang trước</button>
+  <span id="pageRange">Trang 1</span>
+  <button id="nextBtn" type="button">Trang sau ▶</button>
+  <button id="closeBookBtn" type="button">Đóng sổ</button>
+</div>
+
+  </div>
+
+  <!-- MODAL THÔNG TIN CÁ NHÂN -->
+  <div id="familyPersonModal" hidden>
+    <div class="family-person-modal-backdrop"></div>
+    <div class="family-person-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="familyPersonModalTitle">
+      <div class="family-person-modal-header">
+        <h2 id="familyPersonModalTitle">THÔNG TIN CÁ NHÂN</h2>
+        <button id="closeFamilyPersonModal" type="button" aria-label="Đóng">✕</button>
+      </div>
+      <div id="familyPersonModalContent"></div>
+      <div class="family-person-modal-footer">
+        <button id="backFamilyPersonModal" type="button">← Quay về</button>
+      </div>
+    </div>
+  </div>
+
+</section>
 
 <!-- ================= MAIN ================= -->
 <main>
@@ -78,19 +118,11 @@
   <div class="content-row">
 <!-- ================= CỘT CÂY GIA PHẢ ================= -->  
 <div class="tree-column">
-Nhấn avatar để xem cây gia phả cả họ hoặc từng chi - Nhấn bìa dưới xem dạng sách lật
-<div class="book-center">
-  <a class="book-card" href="/notice.html?type=book&id=giapha">
-    <img src="/store/book.png">
-    
-  </a>
-</div>
-    <div class="panel">
-      <h3>Cây gia phả</h3>
 
+    <div class="panel">
+      <h3>CÂY GIA PHẢ 3 ĐỜI</h3>
       Zoom:
       <input type="range" id="zoomRange" min="50" max="150" value="100">
-
       <!-- 👉 WRAPPER ĐỂ ẨN / HIỆN CÂY -->
       <div id="tree-wrapper">
         <div id="tree-scroll">
@@ -113,11 +145,10 @@ Nhấn avatar để xem cây gia phả cả họ hoặc từng chi - Nhấn bìa
   z-index: 1000;
 "></div>
 
-
   <!-- ================= CỘT THÔNG TIN ================= -->
   <div class="info-column">
     <div class="panel">
-      <h3>Thông tin cá nhân</h3>
+      <h3>THÔNG TIN CÁ NHÂN</h3>
 
       <div class="filters">
         <b>Chi:</b>
@@ -151,9 +182,6 @@ Nhấn avatar để xem cây gia phả cả họ hoặc từng chi - Nhấn bìa
 
 </div>
 
-
-
-
 <!-- ===== TIMELINE INFO ===== -->
 <div class="info-grid">
 
@@ -176,13 +204,6 @@ Nhấn avatar để xem cây gia phả cả họ hoặc từng chi - Nhấn bìa
   </iframe>
 </div>
 
-
-
-
-
-
-
-
 </main>
 
 <!-- ================= FOOTER ================= -->
@@ -198,7 +219,6 @@ Nhấn avatar để xem cây gia phả cả họ hoặc từng chi - Nhấn bìa
   <!-- Admin lock -->
   <div id="admin-lock">🔒</div>
 </footer>
-
 
 <script type="module" src="js/main.js"></script>
 </body>
